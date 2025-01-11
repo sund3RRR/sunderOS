@@ -27,6 +27,24 @@
       logo = "Nixos";
     };
   };
+  boot = {
+    consoleLogLevel = 0;
+    initrd.verbose = false;
+    kernelParams = [
+      "quiet"
+      "splash"
+      "boot.shell_on_fail"
+      "loglevel=3"
+      "rd.systemd.show_status=false"
+      "rd.udev.log_level=3"
+      "udev.log_priority=3"
+    ];
+  };
+  boot.plymouth = {
+    enable = true;
+    themePackages = [ pkgs.plymouth-themes ];
+    theme = "glowing";
+  };
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.

@@ -9,50 +9,72 @@
   };
   outputs =
     { flakelight, ... }@inputs:
-    flakelight ./. {
-      inherit inputs;
+    flakelight ./. (
+      let
+        pkgs-overlay =
+          final: prev:
+          builtins.listToAttrs (
+            map (pkg: {
+              name = pkg;
+              value = final.callPackage ./pkgs/${pkg} { };
+            }) (builtins.attrNames (builtins.readDir ./pkgs))
+          );
+      in
+      {
+        inherit inputs;
 
-      overlay = (import ./pkgs/overlay.nix);
+        formatter = pkgs: pkgs.nixfmt-rfc-style;
+        overlay = pkgs-overlay;
 
-      nixosConfigurations = {
-        sunderPC =
+        packages =
           let
-            system = "x86_64-linux";
+            discoverPackages = builtins.attrNames (builtins.readDir ./pkgs);
           in
-          {
-            inherit system;
-            modules = [
-              ./sunderPC/configuration.nix
-              ./modules/amnezia-vpn.nix
-              { nixpkgs.overlays = [ (import ./pkgs/overlay.nix) ]; }
-              {
-                _module.args.unstable = import inputs.nixpkgs-unstable {
-                  inherit system;
-                  config.allowUnfree = true;
-                };
-              }
-            ];
-          };
-        sunderBook =
-          let
-            system = "aarch64-linux";
-          in
-          {
-            inherit system;
-            modules = [
-              ./sunderBook/configuration.nix
-              ./modules/amnezia-vpn.nix
-              { nixpkgs.overlays = [ (import ./pkgs/overlay.nix) ]; }
-              {
-                _module.args.unstable = import inputs.nixpkgs-unstable {
-                  inherit system;
-                  config.allowUnfree = true;
-                };
-              }
-            ];
-          };
-      };
+          builtins.listToAttrs (
+            map (pkg: {
+              name = pkg;
+              value = import ./pkgs/${pkg};
+            }) discoverPackages
+          );
 
-      formatter = pkgs: pkgs.nixfmt-rfc-style;
-    };
+        nixosConfigurations = {
+          sunderPC =
+            let
+              system = "x86_64-linux";
+            in
+            {
+              inherit system;
+              modules = [
+                ./sunderPC/configuration.nix
+                ./modules/amnezia-vpn.nix
+                { nixpkgs.overlays = [ pkgs-overlay ]; }
+                {
+                  _module.args.unstable = import inputs.nixpkgs-unstable {
+                    inherit system;
+                    config.allowUnfree = true;
+                  };
+                }
+              ];
+            };
+          sunderBook =
+            let
+              system = "aarch64-linux";
+            in
+            {
+              inherit system;
+              modules = [
+                ./sunderBook/configuration.nix
+                ./modules/amnezia-vpn.nix
+                { nixpkgs.overlays = [ pkgs-overlay ]; }
+                {
+                  _module.args.unstable = import inputs.nixpkgs-unstable {
+                    inherit system;
+                    config.allowUnfree = true;
+                  };
+                }
+              ];
+            };
+        };
+      }
+    );
 }

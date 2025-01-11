@@ -27,6 +27,11 @@
     };
   };
 
+  programs.virt-manager.enable = true;
+  users.groups.libvirtd.members = ["sunder"];
+  virtualisation.libvirtd.enable = true;
+  virtualisation.spiceUSBRedirection.enable = true;
+
   programs.amnezia-vpn.enable = true;
   programs.zsh = {
     enable = true;
@@ -138,6 +143,7 @@
       "networkmanager"
       "wheel"
       "docker"
+      "libvirtd"
     ];
     shell = pkgs.zsh;
     packages = with pkgs; [

@@ -12,12 +12,14 @@
     flakelight ./. {
       inherit inputs;
 
-      nixosConfigurations =
-        let
-          system = "x86_64-linux";
-        in
-        {
-          sunderPC = {
+      overlay = (import ./pkgs/overlay.nix);
+
+      nixosConfigurations = {
+        sunderPC =
+          let
+            system = "x86_64-linux";
+          in
+          {
             inherit system;
             modules = [
               ./sunderPC/configuration.nix
@@ -31,7 +33,25 @@
               }
             ];
           };
-        };
+        sunderBook =
+          let
+            system = "aarch64-linux";
+          in
+          {
+            inherit system;
+            modules = [
+              ./sunderBook/configuration.nix
+              ./modules/amnezia-vpn.nix
+              { nixpkgs.overlays = [ (import ./pkgs/overlay.nix) ]; }
+              {
+                _module.args.unstable = import inputs.nixpkgs-unstable {
+                  inherit system;
+                  config.allowUnfree = true;
+                };
+              }
+            ];
+          };
+      };
 
       formatter = pkgs: pkgs.nixfmt-rfc-style;
     };

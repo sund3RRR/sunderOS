@@ -47,6 +47,7 @@
               modules = [
                 ./sunderPC/configuration.nix
                 ./modules/amnezia-vpn.nix
+                ./modules/gaming.nix
                 { nixpkgs.overlays = [ pkgs-overlay ]; }
                 {
                   _module.args.unstable = import inputs.nixpkgs-unstable {

@@ -27,8 +27,9 @@
     };
   };
 
+  programs.gaming.enable = true;
   programs.virt-manager.enable = true;
-  users.groups.libvirtd.members = ["sunder"];
+  users.groups.libvirtd.members = [ "sunder" ];
   virtualisation.libvirtd.enable = true;
   virtualisation.spiceUSBRedirection.enable = true;
 
@@ -52,6 +53,7 @@
     efiSupport = true;
     device = "nodev";
     useOSProber = true;
+    splashImage = null;
     theme = pkgs.elegant-grub-theme.override {
       theme = "forest";
       type = "float";
@@ -60,6 +62,25 @@
       resolution = "4k";
       logo = "Nixos";
     };
+  };
+
+  boot = {
+    consoleLogLevel = 0;
+    initrd.verbose = false;
+    kernelParams = [
+      "quiet"
+      "splash"
+      "boot.shell_on_fail"
+      "loglevel=3"
+      "rd.systemd.show_status=false"
+      "rd.udev.log_level=3"
+      "udev.log_priority=3"
+    ];
+  };
+
+  boot.plymouth = {
+    enable = true;
+    theme = "bgrt";
   };
 
   xdg.portal = {
@@ -170,9 +191,7 @@
     nixfmt-rfc-style
     unstable.wineWowPackages.stagingFull
     firefoxpwa
-    #   amnezia-vpn
-    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    #  wget
+    pods
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

@@ -2,7 +2,7 @@
   stdenvNoCC,
   lib,
   fetchFromGitHub,
-  theme ? "glowing",
+  theme ? "deus_ex",
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "plymouth-themes";

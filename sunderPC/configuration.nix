@@ -3,36 +3,24 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 {
-  config,
   pkgs,
   unstable,
   ...
 }:
 {
   imports = [
-    # Include the results of the hardware scan.
-    ./hardware-configuration.nix
+    ./boot.nix
+    ./filesystems.nix
+    ./hardware.nix
+    ./networking.nix
+    ./nix-config.nix
+    ./virtualisation.nix
+    #     imports = [
+    #   (modulesPath + "/installer/scan/not-detected.nix")
+    # ];
   ];
 
-  nix = {
-    settings.experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
-    optimise.automatic = true;
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 7d";
-    };
-  };
-
   programs.gaming.enable = true;
-  programs.virt-manager.enable = true;
-  users.groups.libvirtd.members = [ "sunder" ];
-  virtualisation.libvirtd.enable = true;
-  virtualisation.spiceUSBRedirection.enable = true;
-
   programs.amnezia-vpn.enable = true;
   programs.zsh = {
     enable = true;
@@ -44,44 +32,9 @@
     };
   };
   programs.dconf.enable = true;
+
   services.flatpak.enable = true;
   services.avahi.enable = true;
-  # Bootloader.
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.grub = {
-    enable = true;
-    efiSupport = true;
-    device = "nodev";
-    useOSProber = true;
-    splashImage = null;
-    theme = pkgs.elegant-grub-theme.override {
-      theme = "forest";
-      type = "float";
-      side = "left";
-      color = "dark";
-      resolution = "4k";
-      logo = "Nixos";
-    };
-  };
-
-  boot = {
-    consoleLogLevel = 0;
-    initrd.verbose = false;
-    kernelParams = [
-      "quiet"
-      "splash"
-      "boot.shell_on_fail"
-      "loglevel=3"
-      "rd.systemd.show_status=false"
-      "rd.udev.log_level=3"
-      "udev.log_priority=3"
-    ];
-  };
-
-  boot.plymouth = {
-    enable = true;
-    theme = "bgrt";
-  };
 
   xdg.portal = {
     enable = true;
@@ -92,7 +45,6 @@
     xdgOpenUsePortal = true;
   };
 
-  networking.hostName = "sunderPC"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -100,7 +52,6 @@
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
-  networking.networkmanager.enable = true;
 
   # Set your time zone.
   time.timeZone = "Europe/Moscow";
@@ -138,7 +89,7 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -173,13 +124,12 @@
       #  thunderbird
     ];
   };
-  virtualisation.docker.enable = true;
+
   # Install firefox.
   programs.firefox.enable = true;
   programs.firefox.nativeMessagingHosts.packages = [ pkgs.firefoxpwa ];
 
   # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
 
   fonts.packages = with pkgs; [ meslo-lgs-nf ];
   # List packages installed in system profile. To search, run:
@@ -208,8 +158,7 @@
   # services.openssh.enable = true;
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 3389 ];
-  networking.firewall.allowedUDPPorts = [ 3389 ];
+
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 

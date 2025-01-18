@@ -15,9 +15,6 @@
     ./networking.nix
     ./nix-config.nix
     ./virtualisation.nix
-    #     imports = [
-    #   (modulesPath + "/installer/scan/not-detected.nix")
-    # ];
   ];
 
   programs.gaming.enable = true;
@@ -76,8 +73,10 @@
   services.xserver.enable = true;
 
   # Enable the KDE Plasma Desktop Environment.
-  services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
+  services.desktopManager.cosmic.enable = true;
+  services.displayManager.cosmic-greeter.enable = true;
+  #services.displayManager.sddm.enable = true;
+  #services.desktopManager.plasma6.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -142,6 +141,7 @@
     unstable.wineWowPackages.stagingFull
     firefoxpwa
     pods
+    unstable.nix-update
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

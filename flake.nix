@@ -1,11 +1,13 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/3f0a8ac25fb6";
+    #nixpkgs.url = "github:nixos/nixpkgs/3f0a8ac25fb6";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     flakelight = {
       url = "github:nix-community/flakelight";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixpkgs.follows = "nixos-cosmic/nixpkgs";
+    nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic/a7c19e3547720b3f4599c5c469d51ea4fae82e5d";
   };
   outputs =
     { flakelight, ... }@inputs:
@@ -55,6 +57,13 @@
                     config.allowUnfree = true;
                   };
                 }
+                {
+                  nix.settings = {
+                    substituters = [ "https://cosmic.cachix.org/" ];
+                    trusted-public-keys = [ "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE=" ];
+                  };
+                }
+                inputs.nixos-cosmic.nixosModules.default
               ];
             };
           sunderBook =

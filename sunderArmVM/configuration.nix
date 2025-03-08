@@ -8,42 +8,51 @@
 }:
 {
   imports = [
-    ./boot.nix
-    ./filesystems.nix
-    ./hardware.nix
-    ./networking.nix
-    ./nix-config.nix
-    ./virtualisation.nix
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
   ];
 
-  nixld.enable = true;
-  zapret.enable = true;
-  
-  #programs.gaming.enable = true;
-  programs.amnezia-vpn.enable = true;
-  programs.zsh = {
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
+  # Bootloader.
+  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.grub = {
     enable = true;
-    syntaxHighlighting.enable = true;
-    autosuggestions.enable = true;
-    zsh-autoenv.enable = true;
-    shellAliases = {
-      rebuild = "sudo nixos-rebuild switch --flake ~/sunderOS#sunderBook";
+    efiSupport = true;
+    gfxmodeEfi = "1920x1080";
+    device = "nodev";
+    useOSProber = true;
+    theme = pkgs.elegant-grub-theme.override {
+      theme = "forest";
+      type = "float";
+      side = "left";
+      color = "dark";
+      resolution = "1080p";
+      logo = "Nixos";
     };
   };
-  programs.dconf.enable = true;
-
-  services.flatpak.enable = true;
-  services.avahi.enable = true;
-
-  xdg.portal = {
-    enable = true;
-    extraPortals = [
-      #pkgs.xdg-desktop-portal-gtk
-      pkgs.kdePackages.xdg-desktop-portal-kde
+  boot = {
+    consoleLogLevel = 0;
+    initrd.verbose = false;
+    kernelParams = [
+      "quiet"
+      "splash"
+      "boot.shell_on_fail"
+      "loglevel=3"
+      "rd.systemd.show_status=false"
+      "rd.udev.log_level=3"
+      "udev.log_priority=3"
     ];
-    xdgOpenUsePortal = true;
+  };
+  boot.plymouth = {
+    enable = true;
+    themePackages = [ pkgs.plymouth-themes ];
+    theme = "glowing";
   };
 
+  networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -51,6 +60,7 @@
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
+  networking.networkmanager.enable = true;
 
   # Set your time zone.
   time.timeZone = "Europe/Moscow";
@@ -75,7 +85,7 @@
   services.xserver.enable = true;
 
   # Enable the KDE Plasma Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
+  services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
 
   # Configure keymap in X11
@@ -88,7 +98,7 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-
+  hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -103,6 +113,7 @@
     #media-session.enable = true;
   };
 
+  virtualisation.vmware.guest.enable = true;
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
@@ -113,10 +124,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
-      "docker"
-      "libvirtd"
     ];
-    shell = pkgs.zsh;
     packages = with pkgs; [
       kdePackages.kate
       #  thunderbird
@@ -125,66 +133,18 @@
 
   # Install firefox.
   programs.firefox.enable = true;
-  programs.firefox.nativeMessagingHosts.packages = [ pkgs.firefoxpwa ];
-
+  programs.amnezia-vpn.enable = true;
+  programs.evince.enable = true;
   # Allow unfree packages
-
-  fonts.packages = with pkgs; [ meslo-lgs-nf ];
-
-  services.xremap = {
-    enable = true;
-    withKDE = true;
-    /* NOTE: since this sample configuration does not have any DE, xremap needs to be started manually by systemctl --user start xremap */
-    serviceMode = "user";
-    userName = "sunder";
-  };
-
-  systemd.packages = [ pkgs.lact ];
-  systemd.services."lactd".wantedBy = [ "multi-user.target" ];
-
-  # Modmap for single key rebinds
-  services.xremap.config.modmap = [
-    {
-      name = "Global";
-      remap = {
-        "KEY_RIGHTCTRL" = "KEY_PAGEDOWN";
-        "KEY_RIGHTALT" = "KEY_PAGEUP";
-        "KEY_INSERT" = "KEY_PRINT";
-      };
-    }
-  ];
-  systemd.user.services.xremap.wantedBy = [ "multi-user.target" ];
-
-  environment.variables = {
-    NIXOS_OZONE_WL = "1";
-  };
+  nixpkgs.config.allowUnfree = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    micro
-    wl-clipboard
-    htop
-    btop
-    s-tui
-    fastfetch
-    git
-    wget
-    curl
-    tree
-    nixfmt-rfc-style
-    distrobox
-    
-    google-chrome
-    brave
     vscode
-    wineWowPackages.stagingFull
-    firefoxpwa
-    pods
-    zed-editor
-    lact
-    kdePackages.klevernotes
-    prismlauncher
+    hello
+    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    #  wget
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -201,7 +161,8 @@
   # services.openssh.enable = true;
 
   # Open ports in the firewall.
-
+  # networking.firewall.allowedTCPPorts = [ ... ];
+  # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
@@ -212,4 +173,5 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
+
 }

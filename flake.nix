@@ -1,42 +1,67 @@
 {
   inputs = {
-    #nixpkgs.url = "github:nixos/nixpkgs/3f0a8ac25fb6";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     flakelight = {
       url = "github:nix-community/flakelight";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixpkgs.follows = "nixos-cosmic/nixpkgs";
-    nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic/a7c19e3547720b3f4599c5c469d51ea4fae82e5d";
+    tuxedo-nixos.url = "github:sund3RRR/tuxedo-nixos/dev";
+    xremap-flake.url = "github:xremap/nix-flake";
   };
   outputs =
     { flakelight, ... }@inputs:
     flakelight ./. (
+      { lib, ... }:
       let
         pkgs-overlay =
           final: prev:
           builtins.listToAttrs (
             map (pkg: {
               name = pkg;
-              value = final.callPackage ./pkgs/${pkg} { };
-            }) (builtins.attrNames (builtins.readDir ./pkgs))
-          );
+              value = final.callPackage ./pkgs/generic/${pkg} { };
+            }) (builtins.attrNames (builtins.readDir ./pkgs/generic))
+          )
+          // {
+            linuxMechrevo = final.linuxPackages.extend (
+              lpself: lpsuper: {
+                tuxedo-drivers = prev.linuxPackages.callPackage ./pkgs/mechrevo-drivers { };
+              }
+            );
+            kdePackages = prev.kdePackages.overrideScope (
+              kpfinal: kpprev: {
+                kwin = kpprev.kwin.overrideAttrs (
+                  finalAttrs: prevAttrs: {
+                    postPatch =
+                      prevAttrs.postPatch
+                      + ''
+                        substituteInPlace src/virtualdesktops.cpp \
+                          --replace-fail "input()->registerAxisShortcut(Qt::MetaModifier | Qt::AltModifier, PointerAxisDown," \
+                            "input()->registerAxisShortcut(Qt::MetaModifier, PointerAxisUp," \
+                          --replace-fail "input()->registerAxisShortcut(Qt::MetaModifier | Qt::AltModifier, PointerAxisUp," \
+                            "input()->registerAxisShortcut(Qt::MetaModifier, PointerAxisDown,"
+                      '';
+                  }
+                );
+              }
+            );
+          };
       in
       {
         inherit inputs;
+
+        systems = lib.intersectLists lib.systems.doubles.linux lib.systems.flakeExposed;
 
         formatter = pkgs: pkgs.nixfmt-rfc-style;
         overlay = pkgs-overlay;
 
         packages =
-          let
-            discoverPackages = builtins.attrNames (builtins.readDir ./pkgs);
-          in
+          { system, ... }:
           builtins.listToAttrs (
             map (pkg: {
               name = pkg;
-              value = import ./pkgs/${pkg};
-            }) discoverPackages
+              value = import ./pkgs/generic/${pkg};
+            }) (builtins.attrNames (builtins.readDir ./pkgs/generic))
           );
 
         nixosConfigurations = {
@@ -48,7 +73,6 @@
               inherit system;
               modules = [
                 ./sunderPC/configuration.nix
-                ./modules/amnezia-vpn.nix
                 ./modules/gaming.nix
                 { nixpkgs.overlays = [ pkgs-overlay ]; }
                 {
@@ -57,25 +81,48 @@
                     config.allowUnfree = true;
                   };
                 }
-                {
-                  nix.settings = {
-                    substituters = [ "https://cosmic.cachix.org/" ];
-                    trusted-public-keys = [ "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE=" ];
-                  };
-                }
-                inputs.nixos-cosmic.nixosModules.default
               ];
             };
           sunderBook =
+            let
+              system = "x86_64-linux";
+            in
+            {
+              inherit system;
+              modules = [
+                ./sunderBook/configuration.nix
+                ./modules/gaming.nix
+                ./modules/fhs-compat.nix
+                ./modules/zapret.nix
+                inputs.tuxedo-nixos.nixosModules.default
+                inputs.xremap-flake.nixosModules.default
+                {
+                  nixpkgs.overlays = [
+                    pkgs-overlay
+                    #inputs.tuxedo-nixos.overlays.default
+                  ];
+                }
+                {
+                  _module.args.unstable = import inputs.nixpkgs-unstable {
+                    inherit system;
+                    config.allowUnfree = true;
+                  };
+                }
+              ];
+            };
+          sunderArmVM =
             let
               system = "aarch64-linux";
             in
             {
               inherit system;
               modules = [
-                ./sunderBook/configuration.nix
-                ./modules/amnezia-vpn.nix
-                { nixpkgs.overlays = [ pkgs-overlay ]; }
+                ./sunderArmVM/configuration.nix
+                {
+                  nixpkgs.overlays = [
+                    pkgs-overlay
+                  ];
+                }
                 {
                   _module.args.unstable = import inputs.nixpkgs-unstable {
                     inherit system;

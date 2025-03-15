@@ -26,12 +26,16 @@
   boot = {
     kernelPackages = pkgs.linuxMechrevo;
     kernelModules = [ "kvm-amd" ];
-    extraModulePackages = with config.boot.kernelPackages; [ yt6801 tuxedo-drivers ];
+    extraModulePackages = with config.boot.kernelPackages; [
+      yt6801
+      tuxedo-drivers
+    ];
     initrd = {
       verbose = false;
       availableKernelModules = [
         "nvme"
         "xhci_pci"
+        "thunderbolt"
         "ahci"
         "usbhid"
         "usb_storage"

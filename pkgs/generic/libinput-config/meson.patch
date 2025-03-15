@@ -1,0 +1,14 @@
+--- a/meson.build
++++ b/meson.build
+@@ -45,11 +45,6 @@ if get_option('non_glibc')
+ 
+     run_target('pre-uninstall', command: ['/bin/true'])
+ else
+-    meson.add_install_script('scripts/preload.sh', libdir, project_name)
+-
+-    run_target('pre-uninstall',
+-        command: ['scripts/unpreload.sh', libdir, project_name]
+-    )
+ endif
+ 
+ libinput_dep = dependency('libinput')

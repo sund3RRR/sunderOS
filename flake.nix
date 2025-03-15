@@ -94,6 +94,7 @@
                 ./modules/gaming.nix
                 ./modules/fhs-compat.nix
                 ./modules/zapret.nix
+                ./modules/libinput-config.nix
                 inputs.tuxedo-nixos.nixosModules.default
                 inputs.xremap-flake.nixosModules.default
                 {

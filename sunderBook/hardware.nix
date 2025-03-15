@@ -2,7 +2,6 @@
   config,
   pkgs,
   lib,
-  modulesPath,
   ...
 }:
 {
@@ -19,6 +18,7 @@
     };
   };
 
+  hardware.i2c.enable = true;
   hardware.bluetooth.enable = true;
   hardware.enableRedistributableFirmware = lib.mkDefault true;
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

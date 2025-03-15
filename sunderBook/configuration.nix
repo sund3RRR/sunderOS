@@ -4,6 +4,7 @@
 
 {
   pkgs,
+  lib,
   ...
 }:
 {
@@ -14,12 +15,30 @@
     ./networking.nix
     ./nix-config.nix
     ./virtualisation.nix
+    ./xremap.nix
+    ./gnome.nix
   ];
 
   nixld.enable = true;
   zapret.enable = true;
-  
-  #programs.gaming.enable = true;
+  programs.gaming.enable = true;
+
+  libinput-config = {
+    enable = true;
+    settings = {
+      override-compositor = "enabled";
+      scroll-factor = "0.5";
+      gesture-speed-x = "1.5";
+      accel-profile = "adaptive"; # {none,flat,adaptive}
+    };
+  };
+
+  qt = {
+    enable = true;
+    #platformTheme = "gnome";
+    #style = "adwaita-dark";
+  };
+
   programs.amnezia-vpn.enable = true;
   programs.zsh = {
     enable = true;
@@ -30,17 +49,19 @@
       rebuild = "sudo nixos-rebuild switch --flake ~/sunderOS#sunderBook";
     };
   };
+
   programs.dconf.enable = true;
+
+  programs.appimage = {
+    enable = true;
+    binfmt = true;
+  };
 
   services.flatpak.enable = true;
   services.avahi.enable = true;
 
   xdg.portal = {
     enable = true;
-    extraPortals = [
-      #pkgs.xdg-desktop-portal-gtk
-      pkgs.kdePackages.xdg-desktop-portal-kde
-    ];
     xdgOpenUsePortal = true;
   };
 
@@ -51,6 +72,10 @@
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
+
+  # Enable the X11 windowing system.
+  # You can disable this if you're only using the Wayland session.
+  services.xserver.enable = true;
 
   # Set your time zone.
   time.timeZone = "Europe/Moscow";
@@ -70,15 +95,6 @@
     LC_TIME = "ru_RU.UTF-8";
   };
 
-  # Enable the X11 windowing system.
-  # You can disable this if you're only using the Wayland session.
-  services.xserver.enable = true;
-
-  # Enable the KDE Plasma Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.desktopManager.plasma6.enable = true;
-
-  # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
     variant = "";
@@ -88,6 +104,8 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
+
+  services.udev.packages = with pkgs; [ ddcutil ];
 
   security.rtkit.enable = true;
   services.pipewire = {
@@ -117,10 +135,6 @@
       "libvirtd"
     ];
     shell = pkgs.zsh;
-    packages = with pkgs; [
-      kdePackages.kate
-      #  thunderbird
-    ];
   };
 
   # Install firefox.
@@ -131,32 +145,11 @@
 
   fonts.packages = with pkgs; [ meslo-lgs-nf ];
 
-  services.xremap = {
-    enable = true;
-    withKDE = true;
-    /* NOTE: since this sample configuration does not have any DE, xremap needs to be started manually by systemctl --user start xremap */
-    serviceMode = "user";
-    userName = "sunder";
-  };
-
   systemd.packages = [ pkgs.lact ];
   systemd.services."lactd".wantedBy = [ "multi-user.target" ];
 
-  # Modmap for single key rebinds
-  services.xremap.config.modmap = [
-    {
-      name = "Global";
-      remap = {
-        "KEY_RIGHTCTRL" = "KEY_PAGEDOWN";
-        "KEY_RIGHTALT" = "KEY_PAGEUP";
-        "KEY_INSERT" = "KEY_PRINT";
-      };
-    }
-  ];
-  systemd.user.services.xremap.wantedBy = [ "multi-user.target" ];
-
   environment.variables = {
-    NIXOS_OZONE_WL = "1";
+    #NIXOS_OZONE_WL = "1";
   };
 
   # List packages installed in system profile. To search, run:
@@ -174,17 +167,19 @@
     tree
     nixfmt-rfc-style
     distrobox
-    
-    google-chrome
+
     brave
     vscode
-    wineWowPackages.stagingFull
     firefoxpwa
-    pods
     zed-editor
     lact
-    kdePackages.klevernotes
     prismlauncher
+    
+    whitesur-gtk-theme
+    adwaita-qt6
+    gnome-tweaks
+    adw-gtk3
+    ddcutil
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -211,5 +206,5 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.11"; # Did you read the comment?
+  system.stateVersion = "25.05"; # Did you read the comment?
 }

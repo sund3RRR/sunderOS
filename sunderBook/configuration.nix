@@ -19,7 +19,7 @@
   nixld.enable = true;
   zapret.enable = true;
   
-  #programs.gaming.enable = true;
+  programs.gaming.enable = true;
   programs.amnezia-vpn.enable = true;
   programs.zsh = {
     enable = true;
@@ -31,6 +31,11 @@
     };
   };
   programs.dconf.enable = true;
+
+  programs.appimage = {
+    enable = true;
+    binfmt = true;
+  };
 
   services.flatpak.enable = true;
   services.avahi.enable = true;

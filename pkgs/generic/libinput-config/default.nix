@@ -30,4 +30,12 @@ stdenv.mkDerivation {
   buildInputs = [
     libinput
   ];
+  
+  meta = with lib; {
+    homepage = "https://gitlab.com/warningnonpotablewater/libinput-config";
+    description = "Configuration system for libinput";
+    license = licenses.bsd;
+    maintainers = with maintainers; [ sund3RRR ];
+    platforms = platforms.linux;
+  };
 }

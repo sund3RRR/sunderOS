@@ -1,4 +1,5 @@
 {
+  lib,
   fetchFromGitLab,
   stdenv,
   meson,
@@ -34,7 +35,7 @@ stdenv.mkDerivation {
   meta = with lib; {
     homepage = "https://gitlab.com/warningnonpotablewater/libinput-config";
     description = "Configuration system for libinput";
-    license = licenses.bsd;
+    license = licenses.bsd0;
     maintainers = with maintainers; [ sund3RRR ];
     platforms = platforms.linux;
   };

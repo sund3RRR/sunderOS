@@ -23,6 +23,7 @@
       devtoolbox
       errands
       fragments
+      gnome-tweaks
     ]
     ++ (with pkgs.gnomeExtensions; [
       appindicator

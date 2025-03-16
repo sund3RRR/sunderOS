@@ -5,7 +5,9 @@
   ...
 }:
 {
-  hardware.tuxedo-control-center.enable = true;
+  services.udev.packages = with pkgs; [
+    ddcutil
+  ];
 
   hardware = {
     graphics = {
@@ -18,6 +20,7 @@
     };
   };
 
+  hardware.tuxedo-control-center.enable = true;
   hardware.i2c.enable = true;
   hardware.bluetooth.enable = true;
   hardware.enableRedistributableFirmware = lib.mkDefault true;

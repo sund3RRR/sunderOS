@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.programs.gaming;
+  cfg = config.gaming;
 in
 {
-  options.programs.gaming = {
+  options.gaming = {
     enable = lib.mkEnableOption "Gaming module";
   };
 

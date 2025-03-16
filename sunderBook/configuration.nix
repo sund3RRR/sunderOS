@@ -18,8 +18,8 @@
     ./xremap.nix
     ./gnome.nix
     ./touchpad.nix
-    ./programs
-    ./services
+    ./programs.nix
+    ./services.nix
   ];
 
   nixld.enable = true;

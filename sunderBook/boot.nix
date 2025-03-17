@@ -40,6 +40,7 @@
         "usbhid"
         "usb_storage"
         "sd_mod"
+        "snd_hda_intel"
         "yt6801" # For Mechrevo 14X Ethernet port
       ];
       kernelModules = [ ];

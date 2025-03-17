@@ -7,7 +7,7 @@
 let
   wallpapers = stdenvNoCC.mkDerivation {
     name = "wallpapers";
-    src = ./src; # Place wallpaper.jpg in the same directory as this config file
+    src = ./src;
     installPhase = ''
       mkdir -p $out/share/wallpapers
       cp * $out/share/wallpapers/

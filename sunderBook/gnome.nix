@@ -28,6 +28,7 @@
     ++ (with pkgs.gnomeExtensions; [
       appindicator
       arcmenu
+      astra-monitor
       blur-my-shell
       dash-to-dock
       dash-to-panel

@@ -7,6 +7,12 @@
     lact
   ];
 
+  services.udev.packages = with pkgs; [
+    ddcutil
+  ];
+
+  services.dbus.packages = with pkgs; [ ];
+
   services.pipewire = {
     enable = true;
     alsa.enable = true;

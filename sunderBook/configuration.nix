@@ -72,8 +72,6 @@
     extraGroups = [
       "networkmanager"
       "wheel"
-      "docker"
-      "libvirtd"
     ];
     shell = pkgs.zsh;
   };
@@ -82,7 +80,7 @@
 
   environment.variables = {
     GI_TYPELIB_PATH = "/run/current-system/sw/lib/girepository-1.0";
-    NIXOS_OZONE_WL = "1";
+    #NIXOS_OZONE_WL = "1";
   };
 
   environment.systemPackages = with pkgs; [

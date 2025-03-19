@@ -35,7 +35,7 @@ in
 
     environment.systemPackages = with pkgs; [
       mangohud
-      mangojuice
+      goverlay
       protonup-qt
     ];
   };

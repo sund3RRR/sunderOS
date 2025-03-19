@@ -16,15 +16,15 @@
     initrd = {
       verbose = false;
       availableKernelModules = [
-        "nvme"
-        "xhci_pci"
-        "thunderbolt"
-        "ahci"
-        "usbhid"
-        "usb_storage"
-        "sd_mod"
-        "snd_hda_intel"
-        "yt6801" # For Mechrevo 14X Ethernet port
+        "nvme"                # NVMe SSD support
+        "xhci_pci"            # USB 3.0 controller support
+        "thunderbolt"         # Thunderbolt controller support
+        "ahci"                # SATA controller support
+        "usbhid"              # USB HID device support
+        "usb_storage"         # USB mass storage support
+        "sd_mod"              # SD card reader support
+        "snd_hda_intel"       # Intel HD audio support
+        "yt6801"              # For Mechrevo 14X Ethernet port
       ];
       kernelModules = [ ];
     };

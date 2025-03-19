@@ -1,6 +1,5 @@
 {
-  config,
-  pkgs,
+  username,
   ...
 }:
 {
@@ -8,14 +7,13 @@
     enable = true;
     withGnome = true;
     # withSway = false;
-    # withGnome = false;
     # withX11 = false;
     # withHypr = false;
     # withWlroots = false;
     # withKDE =false;
 
     serviceMode = "user"; # ["user", "system"]
-    userName = "sunder";
+    userName = username;
   };
   # Modmap for single key rebinds
   services.xremap.config.modmap = [

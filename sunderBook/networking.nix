@@ -1,9 +1,10 @@
 {
   lib,
+  hostname,
   ...
 }:
 {
-  networking.hostName = "sunderBook";
+  networking.hostName = hostname;
   networking.networkmanager.enable = true;
   networking.useDHCP = lib.mkDefault true;
 

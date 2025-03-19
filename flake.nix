@@ -28,23 +28,6 @@
                 tuxedo-drivers = prev.linuxPackages.callPackage ./pkgs/mechrevo-drivers { };
               }
             );
-            kdePackages = prev.kdePackages.overrideScope (
-              kpfinal: kpprev: {
-                kwin = kpprev.kwin.overrideAttrs (
-                  finalAttrs: prevAttrs: {
-                    postPatch =
-                      prevAttrs.postPatch
-                      + ''
-                        substituteInPlace src/virtualdesktops.cpp \
-                          --replace-fail "input()->registerAxisShortcut(Qt::MetaModifier | Qt::AltModifier, PointerAxisDown," \
-                            "input()->registerAxisShortcut(Qt::MetaModifier, PointerAxisUp," \
-                          --replace-fail "input()->registerAxisShortcut(Qt::MetaModifier | Qt::AltModifier, PointerAxisUp," \
-                            "input()->registerAxisShortcut(Qt::MetaModifier, PointerAxisDown,"
-                      '';
-                  }
-                );
-              }
-            );
           };
       in
       {
@@ -86,6 +69,8 @@
           sunderBook =
             let
               system = "x86_64-linux";
+              username = "sunder";
+              hostname = "sunderBook";
             in
             {
               inherit system;
@@ -100,7 +85,6 @@
                 {
                   nixpkgs.overlays = [
                     pkgs-overlay
-                    #inputs.tuxedo-nixos.overlays.default
                   ];
                 }
                 {
@@ -108,6 +92,8 @@
                     inherit system;
                     config.allowUnfree = true;
                   };
+                  _module.args.username = username;
+                  _module.args.hostname = hostname;
                 }
               ];
             };

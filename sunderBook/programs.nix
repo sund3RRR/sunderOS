@@ -1,5 +1,6 @@
 {
   pkgs,
+  hostname,
   ...
 }:
 {
@@ -23,7 +24,7 @@
     autosuggestions.enable = true;
     zsh-autoenv.enable = true;
     shellAliases = {
-      rebuild = "sudo nixos-rebuild switch --flake ~/sunderOS#sunderBook";
+      rebuild = "sudo nixos-rebuild switch --flake ~/sunderOS#${hostname}";
     };
   };
 }

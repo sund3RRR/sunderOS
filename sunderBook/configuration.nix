@@ -4,24 +4,23 @@
 
 {
   pkgs,
-  config,
-  lib,
+  username,
   ...
 }:
 {
   imports = [
     ./boot.nix
+    ./cursor-overlay.nix
     ./filesystems.nix
+    ./gnome.nix
     ./hardware.nix
     ./networking.nix
     ./nix-config.nix
-    ./virtualisation.nix
-    ./xremap.nix
-    ./gnome.nix
-    ./touchpad.nix
     ./programs.nix
     ./services.nix
-    ./cursor-overlay.nix
+    ./touchpad.nix
+    ./virtualisation.nix
+    ./xremap.nix
   ];
 
   nixld.enable = true;
@@ -66,9 +65,9 @@
 
   security.rtkit.enable = true;
 
-  users.users.sunder = {
+  users.users.${username} = {
     isNormalUser = true;
-    description = "sunder";
+    description = username;
     extraGroups = [
       "networkmanager"
       "wheel"
@@ -97,15 +96,14 @@
     s-tui
     wget
     python3
-    pciutils
 
     # Desktop apps
     brave
+    code-cursor
     vscode
     lact
     prismlauncher
     zed-editor
-    code-cursor
 
     # Dependencies
     adwaita-qt6 # for window decorations

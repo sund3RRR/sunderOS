@@ -5,6 +5,7 @@
 {
   programs.amnezia-vpn.enable = true;
 
+  # Enable AppImage support.
   programs.appimage = {
     enable = true;
     binfmt = true;

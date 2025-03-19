@@ -50,20 +50,39 @@
   environment.systemPackages =
     with pkgs;
     [
+      # GNOME apps
       amberol
       collision
       devtoolbox
       errands
       fragments
       gnome-tweaks
+
+      # Astra Monitor extension
+      nethogs
+      wirelesstools
+      iotop
+      libgtop
+      pciutils
     ]
     ++ (with pkgs.gnomeExtensions; [
       appindicator
       arcmenu
       astra-monitor
       blur-my-shell
+      caffeine
+      clipboard-history
+      # control-monitor-brightness-and-volume-with-ddcutil // TEMPORARY MUST BE INSTALLED MANUALLY
       dash-to-dock
       dash-to-panel
       gtk4-desktop-icons-ng-ding
+      gnome-40-ui-improvements
+      just-perfection
+      vitals
+      quick-settings-tweaker
     ]);
+
+  environment.variables = {
+    GI_TYPELIB_PATH = "/run/current-system/sw/lib/girepository-1.0"; # For astra-monitor
+  };
 }

@@ -100,13 +100,13 @@
     python3
     pciutils
 
-
     # Desktop apps
     brave
     vscode
     lact
     prismlauncher
     zed-editor
+    cursor-s
 
     # Dependencies
     adwaita-qt6 # for window decorations

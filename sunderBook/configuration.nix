@@ -79,7 +79,6 @@
   fonts.packages = with pkgs; [ meslo-lgs-nf ];
 
   environment.variables = {
-    GI_TYPELIB_PATH = "/run/current-system/sw/lib/girepository-1.0";
     #NIXOS_OZONE_WL = "1";
   };
 
@@ -114,10 +113,6 @@
     firefoxpwa # for firefox pwa
     wl-clipboard # for micro
     nautilus-python # for collision nautilus extension
-    nethogs # for astra monitor extension
-    wirelesstools # for astra monitor extension
-    iotop # for astra monitor extension
-    libgtop # for astra monitor extension
 
     # Themes
     adw-gtk3

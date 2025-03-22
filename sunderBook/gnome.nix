@@ -25,9 +25,15 @@
       amberol        # Music player
       collision      # Hash checker
       devtoolbox     # Developer tool box (prettier, eslint, etc)
+      dialect        # Translate app
       errands        # Task manager
       fragments      # Torrent client
       gnome-tweaks   # GNOME tweaks
+      resources      # System monitor
+      rnote          # Whiteboard app
+      ptyxis         # Terminal emulator
+      pods           # Podman GUI
+      impression     # App to create bootable drives
 
       # Astra Monitor extension
       nethogs

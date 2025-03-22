@@ -98,11 +98,10 @@
     python3
 
     # Desktop apps
-    brave
     code-cursor
     vscode
     lact
-    prismlauncher
+    mailspring
     zed-editor
 
     # Dependencies

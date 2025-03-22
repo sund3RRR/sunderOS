@@ -6,11 +6,13 @@
   users.users.${username}.extraGroups = [
     "docker"
     "libvirtd"
+    "podman"
   ];
   users.groups.libvirtd.members = [ username ];
 
   virtualisation.docker.enable = true;
-  #virtualisation.docker.rootless.enable = true;
+
+  virtualisation.podman.enable = true;
 
   programs.virt-manager.enable = true;  
   virtualisation.libvirtd.enable = true;

@@ -1,7 +1,4 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
+# MECHREVO WUJIE-14X
 {
   pkgs,
   username,
@@ -9,23 +6,24 @@
 }:
 {
   imports = [
-    ./boot.nix
-    ./cursor-overlay.nix
-    ./filesystems.nix
-    ./gnome.nix
     ./hardware.nix
+    ./input.nix
     ./networking.nix
-    ./nix-config.nix
-    ./programs.nix
-    ./services.nix
-    ./touchpad.nix
-    ./virtualisation.nix
-    ./xremap.nix
+
+    ../general/boot.nix
+    ../general/cursor-overlay.nix
+    ../general/gnome.nix
+    ../general/nix-config.nix
+    ../general/programs.nix
+    ../general/services.nix
+    ../general/virtualisation.nix
   ];
 
   nixld.enable = true;
   zapret.enable = true;
   gaming.enable = true;
+
+  programs.hyprland.enable = true;
 
   qt = {
     enable = true;
@@ -37,8 +35,6 @@
     enable = true;
     xdgOpenUsePortal = true;
   };
-
-  services.xserver.enable = true;
 
   # Set your time zone.
   time.timeZone = "Europe/Moscow";
@@ -96,6 +92,7 @@
     s-tui
     wget
     python3
+    hyprpanel
 
     # Desktop apps
     code-cursor

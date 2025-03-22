@@ -34,8 +34,9 @@ in
     hardware.xone.enable = true;
 
     environment.systemPackages = with pkgs; [
-      mangohud
       goverlay
+      vkbasalt
+      mangohud
       protonup-qt
     ];
   };

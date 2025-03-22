@@ -2,9 +2,9 @@
   pkgs,
   ...
 }:
-{
+{ 
+  services.xserver.enable = true;
   services.xserver.displayManager.gdm.enable = true;
-
   services.xserver.desktopManager.gnome = {
     enable = true;
     extraGSettingsOverrides = ''
@@ -14,7 +14,7 @@
 
       # Increase timeout for compositor's alive check (30 seconds)
       [org.gnome.mutter]
-      check-alive-timeout=30000 # 30 seconds
+      check-alive-timeout=30000
     '';
   };
 
@@ -26,7 +26,7 @@
       collision      # Hash checker
       devtoolbox     # Developer tool box (prettier, eslint, etc)
       dialect        # Translate app
-      errands        # Task manager
+      #errands        # Task manager
       fragments      # Torrent client
       gnome-tweaks   # GNOME tweaks
       resources      # System monitor

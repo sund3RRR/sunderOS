@@ -2,12 +2,16 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    tuxedo-nixos.url = "github:sund3RRR/tuxedo-nixos/dev";
+    xremap-flake.url = "github:xremap/nix-flake";
     flakelight = {
       url = "github:nix-community/flakelight";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    tuxedo-nixos.url = "github:sund3RRR/tuxedo-nixos/dev";
-    xremap-flake.url = "github:xremap/nix-flake";
+    hyprpanel = {
+      url = "github:Jas-SinghFSU/HyprPanel";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs =
     { flakelight, ... }@inputs:
@@ -55,7 +59,7 @@
             {
               inherit system;
               modules = [
-                ./sunderPC/configuration.nix
+                ./hosts/sunderPC/configuration.nix
                 ./modules/gaming.nix
                 { nixpkgs.overlays = [ pkgs-overlay ]; }
                 {
@@ -75,7 +79,7 @@
             {
               inherit system;
               modules = [
-                ./sunderBook/configuration.nix
+                ./hosts/sunderBook/configuration.nix
                 ./modules/gaming.nix
                 ./modules/fhs-compat.nix
                 ./modules/zapret.nix
@@ -85,6 +89,7 @@
                 {
                   nixpkgs.overlays = [
                     pkgs-overlay
+                    inputs.hyprpanel.overlay
                   ];
                 }
                 {
@@ -104,7 +109,7 @@
             {
               inherit system;
               modules = [
-                ./sunderArmVM/configuration.nix
+                ./hosts/sunderArmVM/configuration.nix
                 {
                   nixpkgs.overlays = [
                     pkgs-overlay

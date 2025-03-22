@@ -8,11 +8,11 @@
   imports = [
     ./hardware.nix
     ./input.nix
-    ./networking.nix
 
     ../general/boot.nix
     ../general/cursor-overlay.nix
     ../general/gnome.nix
+    ../general/networking.nix
     ../general/nix-config.nix
     ../general/programs.nix
     ../general/services.nix

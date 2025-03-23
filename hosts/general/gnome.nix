@@ -3,7 +3,7 @@
   ...
 }:
 { 
-  services.xserver.enable = true;
+  #services.xserver.enable = true;
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome = {
     enable = true;
@@ -17,6 +17,35 @@
       check-alive-timeout=30000
     '';
   };
+  
+  xdg.terminal-exec.enable = true;
+  xdg.terminal-exec.settings = {
+    GNOME = [
+      "org.gnome.Ptyxis.desktop"
+    ];
+    default = [
+      "org.gnome.Ptyxis.desktop"
+    ];
+  };
+
+  programs.nautilus-open-any-terminal.enable = true;
+  programs.nautilus-open-any-terminal.terminal = "ptyxis";
+
+  services.xserver.excludePackages = with pkgs; [
+    xterm
+  ];
+
+  environment.gnome.excludePackages = with pkgs; [
+    gnome-text-editor
+    gnome-contacts
+    gnome-maps
+    gnome-console
+    gnome-music
+    gnome-system-monitor
+    totem
+    yelp
+    geary
+  ];
 
   environment.systemPackages =
     with pkgs;
@@ -24,13 +53,13 @@
       # GNOME apps
       amberol        # Music player
       collision      # Hash checker
+      clapper        # Video player
       devtoolbox     # Developer tool box (prettier, eslint, etc)
       dialect        # Translate app
-      #errands        # Task manager
+      easyeffects    # Audio effects
       fragments      # Torrent client
       gnome-tweaks   # GNOME tweaks
       resources      # System monitor
-      rnote          # Whiteboard app
       ptyxis         # Terminal emulator
       pods           # Podman GUI
       impression     # App to create bootable drives

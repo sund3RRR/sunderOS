@@ -14,6 +14,7 @@
     ../general/gnome.nix
     ../general/networking.nix
     ../general/nix-config.nix
+    ../general/prismlauncher-overlay.nix
     ../general/programs.nix
     ../general/services.nix
     ../general/virtualisation.nix
@@ -27,8 +28,8 @@
 
   qt = {
     enable = true;
-    #platformTheme = "gnome";
-    #style = "adwaita-dark";
+    # platformTheme = "gnome";
+    # style = "adwaita-dark";
   };
 
   xdg.portal = {
@@ -54,10 +55,10 @@
     LC_TIME = "ru_RU.UTF-8";
   };
 
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
+  # services.xserver.xkb = {
+  #   layout = "us";
+  #   variant = "";
+  # };
 
   security.rtkit.enable = true;
 
@@ -100,6 +101,7 @@
     lact
     mailspring
     zed-editor
+    prismlauncher
 
     # Dependencies
     adwaita-qt6 # for window decorations
@@ -107,7 +109,7 @@
     firefoxpwa # for firefox pwa
     wl-clipboard # for micro
     nautilus-python # for collision nautilus extension
-
+    zenity # for mailspring notifications
     # Themes
     adw-gtk3
     whitesur-gtk-theme

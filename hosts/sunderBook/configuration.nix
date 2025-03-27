@@ -104,15 +104,19 @@
     prismlauncher
 
     # Dependencies
-    adwaita-qt6 # for window decorations
     ddcutil # for brightness extension
     firefoxpwa # for firefox pwa
     wl-clipboard # for micro
-    nautilus-python # for collision nautilus extension
     zenity # for mailspring notifications
+
     # Themes
     adw-gtk3
     whitesur-gtk-theme
+    orchis-theme
+
+    fluent-icon-theme
+    qogir-icon-theme
+    tela-icon-theme
   ];
 
   system.stateVersion = "25.05";

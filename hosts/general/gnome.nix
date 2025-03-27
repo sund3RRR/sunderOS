@@ -15,6 +15,11 @@
       # Increase timeout for compositor's alive check (30 seconds)
       [org.gnome.mutter]
       check-alive-timeout=30000
+
+      # Disable 'sleep' and 'airplane' media buttons on keyboard
+      [org.gnome.settings-daemon.plugins.media-keys]
+      suspend-static="[\'\']"
+      rfkill-static="[\'\']"
     '';
   };
   
@@ -51,13 +56,14 @@
     with pkgs;
     [
       # GNOME apps
-      amberol        # Music player
       collision      # Hash checker
       clapper        # Video player
+      dconf-editor   # GSettings editor
       devtoolbox     # Developer tool box (prettier, eslint, etc)
       dialect        # Translate app
       easyeffects    # Audio effects
       fragments      # Torrent client
+      gapless        # Music player
       gnome-tweaks   # GNOME tweaks
       resources      # System monitor
       ptyxis         # Terminal emulator
@@ -70,6 +76,9 @@
       iotop
       libgtop
       pciutils
+      # Dependencies
+      adwaita-qt6 # for window decorations
+      nautilus-python # for collision nautilus extension
     ]
     ++ (with pkgs.gnomeExtensions; [
       appindicator

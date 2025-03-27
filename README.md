@@ -23,3 +23,9 @@ gfx.webrender.all -> true
 gfx.webrender.compositor -> true
 media.hardware-video-decoding.force-enabled -> true
 ```
+
+## Disable 'sleep' and 'airplane' media buttons on keyboard
+```bash
+gsettings set org.gnome.settings-daemon.plugins.media-keys suspend-static "['']"
+gsettings set org.gnome.settings-daemon.plugins.media-keys rfkill-static "['']"
+```

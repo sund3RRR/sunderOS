@@ -40,7 +40,7 @@
         systems = lib.intersectLists lib.systems.doubles.linux lib.systems.flakeExposed;
 
         formatter = pkgs: pkgs.nixfmt-rfc-style;
-        overlay = pkgs-overlay;
+        overlays.default = pkgs-overlay;
 
         packages =
           { system, ... }:

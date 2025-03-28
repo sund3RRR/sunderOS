@@ -89,6 +89,7 @@
     htop
     tree
     nixfmt-rfc-style
+    nix-search
     micro
     s-tui
     wget

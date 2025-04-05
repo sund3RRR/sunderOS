@@ -27,9 +27,9 @@
             }) (builtins.attrNames (builtins.readDir ./pkgs/generic))
           )
           // {
-            linuxMechrevo = final.linuxPackages.extend (
+            linuxMechrevo = final.linuxPackages_latest.extend (
               lpself: lpsuper: {
-                tuxedo-drivers = prev.linuxPackages.callPackage ./pkgs/mechrevo-drivers { };
+                tuxedo-drivers = prev.linuxPackages_latest.callPackage ./pkgs/mechrevo-drivers { };
               }
             );
           };

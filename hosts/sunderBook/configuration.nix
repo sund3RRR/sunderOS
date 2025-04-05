@@ -24,7 +24,13 @@
   zapret.enable = true;
   gaming.enable = true;
 
+  nixpkgs.config.permittedInsecurePackages = [
+    "electron-32.3.3"
+  ];
+
   programs.hyprland.enable = true;
+
+  services.power-profiles-daemon.enable = true;
 
   qt = {
     enable = true;
@@ -75,7 +81,7 @@
   fonts.packages = with pkgs; [ meslo-lgs-nf ];
 
   environment.variables = {
-    #NIXOS_OZONE_WL = "1";
+    NIXOS_OZONE_WL = "1";
   };
 
   environment.systemPackages = with pkgs; [
@@ -83,21 +89,25 @@
     amdgpu_top
     btop
     curl
+    dig
     distrobox
     fastfetch
     git
+    glxinfo
     htop
     tree
     nixfmt-rfc-style
     nix-search
     micro
+    inxi
     s-tui
     wget
     python3
     hyprpanel
 
     # Desktop apps
-    code-cursor
+    #code-cursor
+    xpipe
     vscode
     lact
     mailspring

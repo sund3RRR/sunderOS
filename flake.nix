@@ -55,18 +55,24 @@
           sunderPC =
             let
               system = "x86_64-linux";
+              username = "sunder";
+              hostname = "sunderPC";
             in
             {
               inherit system;
               modules = [
                 ./hosts/sunderPC/configuration.nix
                 ./modules/gaming.nix
+                ./modules/fhs-compat.nix
+                ./modules/zapret.nix
                 { nixpkgs.overlays = [ pkgs-overlay ]; }
                 {
                   _module.args.unstable = import inputs.nixpkgs-unstable {
                     inherit system;
-                    config.allowUnfree = true;
+                    config.allowUnfree = true; 
                   };
+                  _module.args.username = username;
+                  _module.args.hostname = hostname;
                 }
               ];
             };

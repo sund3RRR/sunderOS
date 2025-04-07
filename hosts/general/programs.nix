@@ -14,10 +14,6 @@
 
   programs.dconf.enable = true;
 
-  # Install firefox.
-  programs.firefox.enable = true;
-  programs.firefox.nativeMessagingHosts.packages = [ pkgs.firefoxpwa ];
-
   programs.zsh = {
     enable = true;
     syntaxHighlighting.enable = true;

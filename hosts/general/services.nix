@@ -4,11 +4,11 @@
 }:
 {
   systemd.packages = with pkgs; [
-    lact
+    #lact
   ];
 
   services.udev.packages = with pkgs; [
-    ddcutil
+    #ddcutil
   ];
 
   services.dbus.packages = with pkgs; [ ];
@@ -22,9 +22,9 @@
     # jack.enable = true;
   };
 
-  systemd.services."lactd".wantedBy = [ "multi-user.target" ];
+  #systemd.services."lactd".wantedBy = [ "multi-user.target" ];
 
-  services.flatpak.enable = true;
+ # services.flatpak.enable = true;
   services.avahi.enable = true;
   services.logind.suspendKey = "ignore";
 

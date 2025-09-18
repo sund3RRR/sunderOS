@@ -108,7 +108,32 @@
                 }
               ];
             };
-          sunderArmVM =
+          sunderUTM =
+            let
+              system = "aarch64-linux";
+              username = "sunder";
+              hostname = "sunderUTM";
+            in
+            {
+              inherit system;
+              modules = [
+                ./hosts/sunderUTM/configuration.nix
+                ./modules/fhs-compat.nix
+                {
+                  nixpkgs.overlays = [ pkgs-overlay ];
+                }
+                {
+                  _module.args.unstable = import inputs.nixpkgs-unstable {
+                    inherit system;
+                    config.allowUnfree = true;
+                  };
+                  _module.args.username = username;
+                  _module.args.hostname = hostname;
+                  _module.args.system = system;
+                }
+              ];
+            };
+          sunderVMware =
             let
               system = "aarch64-linux";
             in

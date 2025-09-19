@@ -7,9 +7,8 @@
   systemd.services."getty@tty1".enable = false;
   systemd.services."autovt@tty1".enable = false;
 
-  #services.xserver.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome = {
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome = {
     enable = true;
     extraGSettingsOverrides = ''
       # Set GDM display scaling factor to 2x (for HiDPI displays)
@@ -19,6 +18,7 @@
       # Increase timeout for compositor's alive check (30 seconds)
       [org.gnome.mutter]
       check-alive-timeout=30000
+      experimental-features=['scale-monitor-framebuffer', 'xwayland-native-scaling']
 
       # Disable 'sleep' and 'airplane' media buttons on keyboard
       [org.gnome.settings-daemon.plugins.media-keys]

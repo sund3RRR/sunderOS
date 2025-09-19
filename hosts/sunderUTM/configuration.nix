@@ -8,8 +8,9 @@
   imports = [
     ./hardware.nix
 
+    ../general/amneziawg-go-overlay.nix
     ../general/boot.nix
-    #../general/gnome.nix
+    ../general/gnome.nix
     ../general/networking.nix
     ../general/nix-config.nix
     ../general/programs.nix
@@ -17,9 +18,6 @@
   ];
 
   nixld.enable = true;
-
-  # services.displayManager.gdm.enable = true;
-  # services.desktopManager.gnome.enable = true;
 
   services.qemuGuest.enable = true;
   services.spice-vdagentd.enable = true;
@@ -49,11 +47,6 @@
     LC_PAPER = "ru_RU.UTF-8";
     LC_TELEPHONE = "ru_RU.UTF-8";
     LC_TIME = "ru_RU.UTF-8";
-  };
-
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
   };
 
   security.rtkit.enable = true;
@@ -91,6 +84,7 @@
     # Desktop apps
     vscode
     zed-editor
+    code-cursor
 
     # Dependencies
     adwaita-qt6 # for window decorations
@@ -102,5 +96,5 @@
     whitesur-gtk-theme # bug
   ];
 
-  system.stateVersion = "25.05";
+  system.stateVersion = "25.11";
 }

@@ -72,7 +72,7 @@
     s-tui
     wget
     python3
-
+    nixpkgs-review
     # Desktop apps
     vscode
     zed-editor

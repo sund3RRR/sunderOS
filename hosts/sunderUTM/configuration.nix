@@ -73,6 +73,8 @@
     wget
     python3
     nixpkgs-review
+    gh
+
     # Desktop apps
     vscode
     zed-editor

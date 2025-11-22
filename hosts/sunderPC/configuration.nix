@@ -9,7 +9,6 @@
     ./hardware.nix
 
     ../general/boot.nix
-    ../general/cursor-overlay.nix
     ../general/gnome.nix
     ../general/networking.nix
     ../general/nix-config.nix
@@ -22,8 +21,6 @@
   nixld.enable = true;
   zapret.enable = true;
   gaming.enable = true;
-
-  programs.hyprland.enable = true;
 
   qt = {
     enable = true;
@@ -92,12 +89,12 @@
     python3
 
     # Desktop apps
-    code-cursor
     vscode
     lact
     mailspring
     zed-editor
     prismlauncher
+    discord
 
     # Dependencies
     adwaita-qt6 # for window decorations
@@ -119,5 +116,5 @@
     whitesur-gtk-theme # bug
   ];
 
-  system.stateVersion = "25.05";
+  system.stateVersion = "25.11";
 }

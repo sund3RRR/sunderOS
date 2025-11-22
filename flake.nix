@@ -55,8 +55,8 @@
           sunderPC =
             let
               system = "x86_64-linux";
-              username = "sunder";
-              hostname = "sunderPC";
+              username = "sund3rrr";
+              hostname = "sund3RRR_PC";
             in
             {
               inherit system;
@@ -73,6 +73,7 @@
                   };
                   _module.args.username = username;
                   _module.args.hostname = hostname;
+                  _module.args.system = system;
                 }
               ];
             };

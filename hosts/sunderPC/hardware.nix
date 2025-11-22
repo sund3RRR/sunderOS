@@ -6,18 +6,17 @@
 }:
 {
   # Filesystems
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/38a57dfa-902d-4b97-bfca-7a72d462a2a4";
-    fsType = "ext4";
-  };
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/EF50-2A72";
-    fsType = "vfat";
-    options = [
-      "fmask=0077"
-      "dmask=0077"
-    ];
-  };
+  fileSystems."/" =
+    { device = "/dev/disk/by-uuid/51e89b9c-3818-437e-b26e-301655dd195e";
+      fsType = "ext4";
+    };
+
+  fileSystems."/boot" =
+    { device = "/dev/disk/by-uuid/ABE2-250C";
+      fsType = "vfat";
+      options = [ "fmask=0077" "dmask=0077" ];
+    };
+
   swapDevices = lib.mkForce [ ];
 
   # Kernel
@@ -58,7 +57,7 @@
       enable32Bit = true;
       extraPackages = with pkgs; [
         libva-utils
-        vaapiVdpau
+        libva-vdpau-driver
       ];
     };
   };

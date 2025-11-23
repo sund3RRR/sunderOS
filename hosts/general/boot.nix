@@ -23,6 +23,7 @@
   
   boot.loader.limine = {
     enable = true;
+    secureBoot.enable = true;
     extraConfig = ''
       timeout: 5
       remember_last_entry: yes

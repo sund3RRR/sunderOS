@@ -87,6 +87,7 @@
     s-tui
     wget
     python3
+    sbctl
 
     # Desktop apps
     vscode

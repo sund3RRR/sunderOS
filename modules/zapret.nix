@@ -56,11 +56,10 @@ let
   whitelist = pkgs.writeText "zapret-whitelist" (lib.concatStringsSep "\n" hostlist);
 in
 {
-  options = {
-    zapret.enable = lib.mkEnableOption "enable zapret conf";
-    # zapret.strategy
+  options.sunderOS.zapret = {
+    enable = lib.mkEnableOption "enable zapret conf";
   };
-  config = lib.mkIf config.zapret.enable {
+  config = lib.mkIf config.sunderOS.zapret.enable {
     services.zapret = {
       enable = true;
       udpSupport = true;

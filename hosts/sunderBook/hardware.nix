@@ -52,7 +52,7 @@
       "rd.udev.log_level=3"             # Set udev log level to errors only
       "udev.log_priority=3"             # Set udev log priority to errors only
       "amdgpu.dcdebugmask=0x10"         # Disable PSR (Panel Self Refresh) in AMDGPU driver
-      #"amdgpu.ppfeaturemask=0xffffffff" # Enable all AMDGPU power management features
+      "amdgpu.ppfeaturemask=0xffffffff" # Enable all AMDGPU power management features
       "acpi.ec_no_wakeup=1"             # Disable EC wakeup events
       "radeon.cik_support=0"            # Disable CIK support in Radeon driver
       "amdgpu.cik_support=1"            # Enable CIK support in AMDGPU driver

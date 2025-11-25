@@ -62,8 +62,7 @@
               inherit system;
               modules = [
                 ./hosts/sunderPC/configuration.nix
-                ./modules/gaming.nix
-                ./modules/fhs-compat.nix
+                ./modules/bootloader.nix
                 ./modules/zapret.nix
                 { nixpkgs.overlays = [ pkgs-overlay ]; }
                 {
@@ -80,15 +79,14 @@
           sunderBook =
             let
               system = "x86_64-linux";
-              username = "sunder";
-              hostname = "sunderBook";
+              username = "sund3rrr";
+              hostname = "sund3RRR_Book";
             in
             {
               inherit system;
               modules = [
                 ./hosts/sunderBook/configuration.nix
-                ./modules/gaming.nix
-                ./modules/fhs-compat.nix
+                ./modules/bootloader.nix
                 ./modules/zapret.nix
                 ./modules/libinput-config.nix
                 inputs.tuxedo-nixos.nixosModules.default
@@ -119,7 +117,7 @@
               inherit system;
               modules = [
                 ./hosts/sunderUTM/configuration.nix
-                ./modules/fhs-compat.nix
+                ./modules/bootloader.nix
                 {
                   nixpkgs.overlays = [ pkgs-overlay ];
                 }

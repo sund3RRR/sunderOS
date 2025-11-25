@@ -10,37 +10,38 @@
     ./input.nix
 
     ../general/boot.nix
-    ../general/cursor-overlay.nix
+    ../general/fhs-compat.nix
+    ../general/gaming.nix
     ../general/gnome.nix
     ../general/networking.nix
     ../general/nix-config.nix
     ../general/prismlauncher-overlay.nix
     ../general/programs.nix
-    ../general/services.nix
     ../general/virtualisation.nix
   ];
 
-  nixld.enable = true;
-  zapret.enable = true;
-  gaming.enable = true;
+  sunderOS = {
+    zapret.enable = true;
 
-  nixpkgs.config.permittedInsecurePackages = [
-    "electron-32.3.3"
-  ];
+    bootloader.oemLogo.enable = true;
 
-  programs.hyprland.enable = true;
-
-  services.power-profiles-daemon.enable = true;
+    bootloader.limine = {
+      enable = true;
+      rememberLastEntry = true;
+      entries = {
+        windows = {
+          enable = true;
+          resource = "boot()";
+        };
+        memtest86.enable = true;
+      };
+    };
+  };
 
   qt = {
     enable = true;
     # platformTheme = "gnome";
     # style = "adwaita-dark";
-  };
-
-  xdg.portal = {
-    enable = true;
-    xdgOpenUsePortal = true;
   };
 
   # Set your time zone.
@@ -60,11 +61,6 @@
     LC_TELEPHONE = "ru_RU.UTF-8";
     LC_TIME = "ru_RU.UTF-8";
   };
-
-  # services.xserver.xkb = {
-  #   layout = "us";
-  #   variant = "";
-  # };
 
   security.rtkit.enable = true;
 
@@ -93,7 +89,6 @@
     distrobox
     fastfetch
     git
-    glxinfo
     htop
     tree
     nixfmt-rfc-style
@@ -103,11 +98,8 @@
     s-tui
     wget
     python3
-    hyprpanel
 
     # Desktop apps
-    #code-cursor
-    xpipe
     vscode
     lact
     mailspring
@@ -115,20 +107,9 @@
     prismlauncher
 
     # Dependencies
-    ddcutil # for brightness extension
-    firefoxpwa # for firefox pwa
     wl-clipboard # for micro
     zenity # for mailspring notifications
-
-    # Themes
-    adw-gtk3
-    whitesur-gtk-theme
-    orchis-theme
-
-    fluent-icon-theme
-    qogir-icon-theme
-    tela-icon-theme
   ];
 
-  system.stateVersion = "25.05";
+  system.stateVersion = "25.11";
 }

@@ -8,16 +8,13 @@
   imports = [
     ./hardware.nix
 
-    ../general/amneziawg-go-overlay.nix
     ../general/boot.nix
+    ../general/fhs-compat.nix
     ../general/gnome.nix
     ../general/networking.nix
     ../general/nix-config.nix
     ../general/programs.nix
-    ../general/services.nix
   ];
-
-  nixld.enable = true;
 
   services.qemuGuest.enable = true;
   services.spice-vdagentd.enable = true;
@@ -25,11 +22,6 @@
   qt = {
     enable = true;
   };
-
-  # xdg.portal = {
-  #   enable = true;
-  #   xdgOpenUsePortal = true;
-  # };
 
   # Set your time zone.
   time.timeZone = "Europe/Moscow";
@@ -64,7 +56,7 @@
   fonts.packages = with pkgs; [ meslo-lgs-nf ];
 
   environment.variables = {
-    #NIXOS_OZONE_WL = "1";
+    NIXOS_OZONE_WL = "1";
   };
 
   environment.systemPackages = with pkgs; [
@@ -87,13 +79,8 @@
     code-cursor
 
     # Dependencies
-    adwaita-qt6 # for window decorations
     wl-clipboard # for micro
     nautilus-python # for collision nautilus extension
-
-    # Themes
-    adw-gtk3
-    whitesur-gtk-theme # bug
   ];
 
   system.stateVersion = "25.11";

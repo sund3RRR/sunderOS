@@ -11,4 +11,6 @@
   networking.firewall.enable = true;
   networking.firewall.allowedTCPPorts = [ ];
   networking.firewall.allowedUDPPorts = [ ];
+
+  services.avahi.enable = true;
 }

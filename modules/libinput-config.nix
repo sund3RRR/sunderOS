@@ -5,11 +5,11 @@
   ...
 }:
 let
-  cfg = config.libinput-config;
+  cfg = config.sunderOS.libinput-config;
   generateConf = attrs: builtins.concatStringsSep "\n" (map (key: "${key}=${attrs.${key}}") (builtins.attrNames attrs));
 in
 {
-  options.libinput-config = {
+  options.sunderOS.libinput-config = {
     enable = lib.mkEnableOption "libinput-config module";
     package = lib.mkOption {
       type = lib.types.package;

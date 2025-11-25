@@ -18,11 +18,6 @@
   services.xremap = {
     enable = true;
     withGnome = true;
-    # withSway = false;
-    # withX11 = false;
-    # withHypr = false;
-    # withWlroots = false;
-    # withKDE =false;
 
     serviceMode = "user"; # ["user", "system"]
     userName = username;

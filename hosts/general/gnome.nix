@@ -7,6 +7,17 @@
   systemd.services."getty@tty1".enable = false;
   systemd.services."autovt@tty1".enable = false;
 
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    # jack.enable = true;
+  };
+
+  services.flatpak.enable = true;
+
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome = {
     enable = true;
@@ -39,6 +50,12 @@
 
   programs.nautilus-open-any-terminal.enable = true;
   programs.nautilus-open-any-terminal.terminal = "ptyxis";
+
+  programs.dconf.enable = true;
+
+  services.gnome.gnome-remote-desktop.enable = true;
+
+  services.printing.enable = true;
 
   services.xserver.excludePackages = with pkgs; [
     xterm
@@ -80,8 +97,10 @@
       iotop
       libgtop
       pciutils
+
       # Dependencies
       adwaita-qt6 # for window decorations
+      adw-gtk3
       nautilus-python # for collision nautilus extension
     ]
     ++ (with pkgs.gnomeExtensions; [
@@ -91,7 +110,6 @@
       blur-my-shell
       caffeine
       clipboard-history
-      # control-monitor-brightness-and-volume-with-ddcutil // TEMPORARY MUST BE INSTALLED MANUALLY
       dash-to-dock
       dash-to-panel
       gtk4-desktop-icons-ng-ding

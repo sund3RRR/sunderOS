@@ -9,26 +9,36 @@
     ./hardware.nix
 
     ../general/boot.nix
+    ../general/fhs-compat.nix
+    ../general/gaming.nix
     ../general/gnome.nix
     ../general/networking.nix
     ../general/nix-config.nix
     ../general/prismlauncher-overlay.nix
     ../general/programs.nix
-    ../general/services.nix
     ../general/virtualisation.nix
   ];
 
-  nixld.enable = true;
-  zapret.enable = true;
-  gaming.enable = true;
+  sunderOS = {
+    zapret.enable = true;
+
+    bootloader.oemLogo.enable = true;
+
+    bootloader.limine = {
+      enable = true;
+      rememberLastEntry = true;
+      entries = {
+        windows.enable = true;
+        windows.resource = "guid(f9bb782b-1fa8-4a47-a8ef-72a47e1e0caf)";
+        memtest86.enable = true;
+      };
+    };
+  };
+
+  services.lact.enable = true;
 
   qt = {
     enable = true;
-  };
-
-  xdg.portal = {
-    enable = true;
-    xdgOpenUsePortal = true;
   };
 
   # Set your time zone.
@@ -49,11 +59,6 @@
     LC_TIME = "ru_RU.UTF-8";
   };
 
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
-
   security.rtkit.enable = true;
 
   users.users.${username} = {
@@ -69,7 +74,7 @@
   fonts.packages = with pkgs; [ meslo-lgs-nf ];
 
   environment.variables = {
-    #NIXOS_OZONE_WL = "1";
+    NIXOS_OZONE_WL = "1";
   };
 
   environment.systemPackages = with pkgs; [
@@ -98,23 +103,9 @@
     discord
 
     # Dependencies
-    adwaita-qt6 # for window decorations
-    ddcutil # for brightness extension
-    firefoxpwa # for firefox pwa
     wl-clipboard # for micro
     nautilus-python # for collision nautilus extension
     zenity # for mailspring notifications
-
-    # Themes
-    adw-gtk3
-    andromeda-gtk-theme # bug
-    colloid-gtk-theme
-    fluent-gtk-theme # bug
-    vimix-gtk-themes
-    tokyonight-gtk-theme
-    lavanda-gtk-theme
-    matcha-gtk-theme
-    whitesur-gtk-theme # bug
   ];
 
   system.stateVersion = "25.11";

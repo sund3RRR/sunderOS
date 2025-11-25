@@ -9,7 +9,6 @@
     ./hardware.nix
     ./input.nix
 
-    ../general/boot.nix
     ../general/fhs-compat.nix
     ../general/gaming.nix
     ../general/gnome.nix
@@ -21,7 +20,7 @@
   ];
 
   sunderOS = {
-    zapret.enable = true;
+    # zapret.enable = false;
 
     bootloader.oemLogo.enable = true;
 
@@ -71,7 +70,7 @@
       "networkmanager"
       "wheel"
     ];
-    shell = pkgs.zsh;
+    shell = pkgs.bash;
   };
 
   fonts.packages = with pkgs; [ meslo-lgs-nf ];

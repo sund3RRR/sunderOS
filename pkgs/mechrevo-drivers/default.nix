@@ -10,7 +10,7 @@ tuxedo-drivers.overrideAttrs (
     postPatch = ''
       # Fix makefile
       substituteInPlace Makefile \
-        --replace-quite "cp -r usr /" "true"
+        --replace-quiet "cp -r usr /" "true"
 
       # Fix fan speed bug (frequently switching to 100% speed when not needed)
       substituteInPlace src/tuxedo_io/tuxedo_io.c \

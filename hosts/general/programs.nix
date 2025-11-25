@@ -17,7 +17,7 @@
     syntaxHighlighting.enable = true;
     autosuggestions.enable = true;
     zsh-autoenv.enable = true;
-    initExtra = ''
+    shellInit = ''
       rebuild() {
         sudo nixos-rebuild "$@" --flake ~/sunderOS#${hostname}
       }

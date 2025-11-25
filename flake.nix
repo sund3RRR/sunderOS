@@ -2,14 +2,10 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-    tuxedo-nixos.url = "github:sund3RRR/tuxedo-nixos/dev";
+    tuxedo-nixos.url = "github:sund3RRR/tuxedo-nixos";
     xremap-flake.url = "github:xremap/nix-flake";
     flakelight = {
       url = "github:nix-community/flakelight";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    hyprpanel = {
-      url = "github:Jas-SinghFSU/HyprPanel";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -80,21 +76,20 @@
             let
               system = "x86_64-linux";
               username = "sund3rrr";
-              hostname = "sund3RRR_Book";
+              hostname = "sunderBook";
             in
             {
               inherit system;
               modules = [
                 ./hosts/sunderBook/configuration.nix
                 ./modules/bootloader.nix
-                ./modules/zapret.nix
+                # ./modules/zapret.nix
                 ./modules/libinput-config.nix
                 inputs.tuxedo-nixos.nixosModules.default
                 inputs.xremap-flake.nixosModules.default
                 {
                   nixpkgs.overlays = [
                     pkgs-overlay
-                    inputs.hyprpanel.overlay
                   ];
                 }
                 {
@@ -104,6 +99,7 @@
                   };
                   _module.args.username = username;
                   _module.args.hostname = hostname;
+                  _module.args.system = system;
                 }
               ];
             };

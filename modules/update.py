@@ -10,6 +10,29 @@ from pathlib import Path
 ZIP_URL = "https://github.com/Snowy-Fluffy/zapret.cfgs/archive/refs/heads/main.zip"
 
 
+def nix_escape(s: str) -> str:
+    return s.replace('"', '\\"')
+
+def extract_udp_ports(filters):
+    """Берём все порты из --filter-udp=PORTS"""
+    ports = set()
+
+    for f in filters:
+        m = re.search(r'--filter-udp=([0-9:, -]+)', f)
+        if not m:
+            continue
+
+        raw = m.group(1).strip()
+
+        # Заменим 50000-65535 → 50000:65535 для Nix
+        raw = raw.replace("-", ":")
+
+        # Если несколько через запятую — разбить
+        for p in raw.split(","):
+            ports.add(p.strip())
+
+    return sorted(ports)
+
 def download_and_extract():
     print("Downloading repository...")
     r = requests.get(ZIP_URL)
@@ -95,13 +118,21 @@ def load_strategies(base: Path):
 
             cleaned.append(p)
 
-        # Nix list
-        nix_list = "[\n      " + "\n      ".join(
-            ["\"" + nix_escape(x) + "\"" for x in cleaned]
-        ) + "\n    ]"
+        m_ports = re.search(r'^NFQWS_PORTS_UDP=([^\n]+)', text, re.MULTILINE)
+        udp_ports = []
+        if m_ports:
+            udp_ports = [p.strip() for p in m_ports.group(1).split(",")]
+
+        # Формируем nix вывод
+        nix_value = "{\n" \
+                    f"      udpPorts = [ {' '.join('\"'+x+'\"' for x in udp_ports)} ];\n" \
+                    f"      filters = [\n" \
+                    + "\n".join(f"        \"{nix_escape(f)}\"" for f in cleaned) + \
+                    "\n      ];\n" \
+                    "    }"
         name = name.replace("для_МГТС", "MGTS")
         name = name.replace("МГТС", "MGTS")
-        strategies[name] = nix_list
+        strategies[name] = nix_value
 
     return strategies
 
@@ -110,10 +141,10 @@ def load_strategies(base: Path):
 def generate_nix(hostlist_nix, discord_list_nix, strategies):
     strategy_attrs = ""
     for name, lst in strategies.items():
-        strategy_attrs += f'\t\t{name} = {lst};\n'
+        strategy_attrs += f'    {name} = {lst};\n'
 
     # enum for strategies
-    enum_list = "\n\t\t\t\t".join([f'"{name}"' for name in strategies.keys()])
+    enum_list = "\n        ".join([f'"{name}"' for name in strategies.keys()])
 
     return f"""
 {{ pkgs, lib, config, ... }}:
@@ -157,16 +188,14 @@ let
 in
 {{
   options.sunderOS.zapret = {{
-    enable = lib.mkEnableOption "enable zapret conf";
+    enable = lib.mkEnableOption "Enable zapret";
 
     strategy = lib.mkOption {{
       type = lib.types.enum [
         {enum_list}
       ];
       default = "{list(strategies.keys())[0]}";
-      description = ''
-        Zapret strategy.
-      '';
+      description = "Zapret strategy to use";
     }};
   }};
 
@@ -174,11 +203,8 @@ in
     services.zapret = {{
       enable = true;
       udpSupport = true;
-      udpPorts = [
-        "443"
-        "50000:50100"
-      ];
-      params = strategies.${{cfg.strategy}};
+      udpPorts = strategies.${{cfg.strategy}}.udpPorts;
+      params = strategies.${{cfg.strategy}}.filters;
     }};
   }};
 }}
@@ -195,6 +221,7 @@ def main():
     nix_text = generate_nix(hostlist_nix, discord_list_nix, strategies)
     with open("zapret.nix", "w") as f:
         f.write(nix_text)
+
 
 
 if __name__ == "__main__":

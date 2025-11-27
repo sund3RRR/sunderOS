@@ -1,3 +1,6 @@
+#!/usr/bin/env nix-shell
+#! nix-shell -i python -p "python3.withPackages (ps: with ps; [ ps.requests ])"
+
 import zipfile
 import requests
 import io
@@ -116,15 +119,16 @@ def generate_nix(hostlist_nix, discord_list_nix, strategies):
 {{ pkgs, lib, config, ... }}:
 
 let
-  zapretDataDrv = {{ stdenvNoCC, fetchFromGitHub }}:
-    stdenvNoCC.mkDerivation {{
+  zapretDataDrv =
+    {{ stdenvNoCC, fetchFromGitHub }}:
+    stdenvNoCC.mkDerivation (finalAttrs: {{
       pname = "zapret-data";
       version = "72.3";
 
       src = fetchFromGitHub {{
         owner = "bol-van";
         repo = "zapret";
-        tag = version;
+        tag = finalAttrs.version;
         hash = "";
       }};
 
@@ -133,8 +137,11 @@ let
         cp -r files $out/
         runHook postInstall
       '';
-    }};
-  zapretData = zapretDataDrv {{ stdenvNoCC = pkgs.stdenvNoCC; fetchFromGitHub = pkgs.fetchFromGitHub }};
+    }});
+  zapretData = zapretDataDrv {{
+    stdenvNoCC = pkgs.stdenvNoCC;
+    fetchFromGitHub = pkgs.fetchFromGitHub;
+  }};
 
   hosts = {hostlist_nix};
   discordIPs = {discord_list_nix};
@@ -186,7 +193,7 @@ def main():
     strategies = load_strategies(base)
 
     nix_text = generate_nix(hostlist_nix, discord_list_nix, strategies)
-    with open("result.nix", "w") as f:
+    with open("zapret.nix", "w") as f:
         f.write(nix_text)
 
 

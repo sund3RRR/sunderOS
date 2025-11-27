@@ -114,6 +114,7 @@
               modules = [
                 ./hosts/sunderUTM/configuration.nix
                 ./modules/bootloader.nix
+                ./modules/zapret.nix
                 {
                   nixpkgs.overlays = [ pkgs-overlay ];
                 }

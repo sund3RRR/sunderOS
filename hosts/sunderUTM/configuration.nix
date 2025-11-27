@@ -8,13 +8,25 @@
   imports = [
     ./hardware.nix
 
-    ../general/boot.nix
     ../general/fhs-compat.nix
     ../general/gnome.nix
     ../general/networking.nix
     ../general/nix-config.nix
     ../general/programs.nix
   ];
+
+  sunderOS = {
+    zapret = {
+      enable = false;
+      strategy = "UltimateFix_ALT_v3";
+    };
+  
+    bootloader.oemLogo.enable = true;
+    bootloader.limine = {
+      enable = true;
+      rememberLastEntry = true;
+    };
+  };
 
   services.qemuGuest.enable = true;
   services.spice-vdagentd.enable = true;
@@ -78,7 +90,6 @@
     # Desktop apps
     vscode
     zed-editor
-    code-cursor
 
     # Dependencies
     wl-clipboard # for micro

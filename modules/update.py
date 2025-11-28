@@ -74,13 +74,16 @@ def load_strategies(base: Path) -> dict:
             p = p.replace('/opt/zapret/ipset/zapret-hosts-user.txt', '${hostlist}')
             p = p.replace('/opt/zapret/ipset/ipset-discord.txt', '${discordHostlist}')
             p = p.replace('/opt/zapret/files/fake/autohostlist.txt', '/var/zapret/autohostlist.txt')
-            p = re.sub(r'/opt/zapret', '${zapretData}', p)
+            p = re.sub(r'/opt/zapret/files', '${zapretData}', p)
             p = p.replace('"', '').replace('\\', '').strip()
             cleaned.append(p)
 
         # Берём порты UDP прямо из переменной
         m_ports = re.search(r'^NFQWS_PORTS_UDP=([^\n]+)', text, re.MULTILINE)
         udp_ports = [p.strip() for p in m_ports.group(1).split(",")] if m_ports else []
+
+        for i in range(0, len(udp_ports)):
+          udp_ports[i] = udp_ports[i].replace("-", ":")
 
         nix_value = "{\n" \
                     f"      udpPorts = [ {' '.join('\"'+x+'\"' for x in udp_ports)} ];\n" \
@@ -104,23 +107,25 @@ def generate_nix(hostlist_nix: str, discord_list_nix: str, strategies: dict) -> 
 let
   zapretDataDrv =
     {{ stdenvNoCC, fetchFromGitHub }}:
-    stdenvNoCC.mkDerivation {{
+    stdenvNoCC.mkDerivation (finalAttrs: {{
       pname = "zapret-data";
       version = "72.3";
 
       src = fetchFromGitHub {{
         owner = "bol-van";
         repo = "zapret";
-        tag = version;
-        hash = "";
+        tag = "v${{finalAttrs.version}}";
+        hash = "sha256-Q36us5qdDsdZ2HBTRXt/9aKiG8OZJdZqr/90ymePLLg=";
       }};
+
+      dontBuild = true;
 
       installPhase = ''
         runHook preInstall
         cp -r files $out/
         runHook postInstall
       '';
-    }};
+    }});
 
   zapretData = zapretDataDrv {{
     stdenvNoCC = pkgs.stdenvNoCC;

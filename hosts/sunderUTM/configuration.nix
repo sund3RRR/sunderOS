@@ -17,8 +17,8 @@
 
   sunderOS = {
     zapret = {
-      enable = false;
-      strategy = "UltimateFix_ALT_v3";
+      enable = true;
+      strategy = "GeneralFix_ALT3";
     };
   
     bootloader.oemLogo.enable = true;
@@ -90,6 +90,7 @@
     # Desktop apps
     vscode
     zed-editor
+    chromium
 
     # Dependencies
     wl-clipboard # for micro

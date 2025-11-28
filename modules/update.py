@@ -73,7 +73,7 @@ def load_strategies(base: Path) -> dict:
         for p in parts:
             p = p.replace('/opt/zapret/ipset/zapret-hosts-user.txt', '${hostlist}')
             p = p.replace('/opt/zapret/ipset/ipset-discord.txt', '${discordHostlist}')
-            p = p.replace('/opt/zapret/files/fake/autohostlist.txt', '/var/zapret/autohostlist.txt')
+            p = p.replace('/opt/zapret/files/fake/autohostlist.txt', '/var/run/autohostlist.txt')
             p = re.sub(r'/opt/zapret/files', '${zapretData}', p)
             p = p.replace('"', '').replace('\\', '').strip()
             cleaned.append(p)

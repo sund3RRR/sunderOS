@@ -18,7 +18,7 @@
   sunderOS = {
     zapret = {
       enable = true;
-      strategy = "GeneralFix_ALT3";
+      strategy = "general_ALT2";
     };
   
     bootloader.oemLogo.enable = true;

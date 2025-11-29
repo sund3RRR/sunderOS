@@ -8,7 +8,6 @@
   imports = [
     ./hardware.nix
 
-    ../general/boot.nix
     ../general/fhs-compat.nix
     ../general/gaming.nix
     ../general/gnome.nix
@@ -20,12 +19,16 @@
   ];
 
   sunderOS = {
-    zapret.enable = true;
+    zapret = {
+      enable = true;
+      strategy = "general_ALT2";
+    };
 
     bootloader.oemLogo.enable = true;
 
     bootloader.limine = {
       enable = true;
+      secureBoot = true;
       rememberLastEntry = true;
       entries = {
         windows.enable = true;

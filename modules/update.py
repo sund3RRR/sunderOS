@@ -59,7 +59,7 @@ def download_and_extract() -> Path:
     tmp_dir = tempfile.TemporaryDirectory()
     z.extractall(tmp_dir.name)
 
-    # Возвращаем путь к корневой папке внутри tmp_dir
+    # Return root dir path
     root_dir_name = z.namelist()[0].split("/")[0]
     return Path(tmp_dir.name) / root_dir_name, tmp_dir
 
@@ -199,7 +199,7 @@ def main():
     with open("zapret.nix", "w") as f:
         f.write(nix_text)
 
-    # Temporary directory удалится автоматически после выхода из контекста
+    # Remove tmp dir
     tmp_dir.cleanup()
 
     try:

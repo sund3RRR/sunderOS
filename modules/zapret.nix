@@ -1,4 +1,9 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 let
   zapretDataDrv =
@@ -1192,6 +1197,7 @@ let
     "188.114.99.224"
     "204.11.56.48"
     "209.85.233.207"
+    ""
   ];
 
   hostlist = pkgs.writeText "zapret-hostlist" (lib.concatStringsSep "\n" hosts);
@@ -1199,490 +1205,651 @@ let
 
   strategies = {
     DiscordFix = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535  --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,split --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535  --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,split --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     DiscordFix_ALT = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-tcp=80  --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake,disorder2 --dpi-desync-cutoff=d4 --dpi-desync-udplen-increment=10 --dpi-desync-repeats=6 --dpi-desync-udplen-pattern=0xDEADBEEF --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --dpi-desync=fake,tamper --dpi-desync-any-protocol --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,disorder2 --dpi-desync-autottl=1 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-tcp=80  --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,disorder2 --dpi-desync-cutoff=d4 --dpi-desync-udplen-increment=10 --dpi-desync-repeats=6 --dpi-desync-udplen-pattern=0xDEADBEEF --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --dpi-desync=fake,tamper --dpi-desync-any-protocol --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,disorder2 --dpi-desync-autottl=1 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     DiscordFix_ALT2 = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-tcp=80 --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --hostlist=${hostlist} --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-repeats=11 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin --new"
-        "--filter-tcp=80,443 --hostlist=${hostlist} --dpi-desync=fake,disorder2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-udp=50000-50100 --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-any-protocol --dpi-desync-cutoff=n4 --new"
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=443 --dpi-desync=fake --dpi-desync-repeats=11 --hostlist=${hostlist}"
+        "--filter-tcp=80 --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --hostlist=\"${hostlist}\" --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-repeats=11 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --new ^"
+        "--filter-tcp=80,443 --hostlist=\"${hostlist}\" --dpi-desync=fake,disorder2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-udp=50000-50100 --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-any-protocol --dpi-desync-cutoff=n4 --new ^"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=443 --dpi-desync=fake --dpi-desync-repeats=11 --hostlist=\"${hostlist}\"\""
       ];
     };
     DiscordFix_MGTS = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535  --dpi-desync=fake,tamper --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-autottl=2 --dpi-desync-repeats=6  --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535  --dpi-desync=fake,tamper --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-autottl=2 --dpi-desync-repeats=6  --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     GeneralFix = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,split --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,split --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     GeneralFix_ALT = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,split --dpi-desync-autottl=5 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,split --dpi-desync-autottl=5 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     GeneralFix_ALT3 = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=split --dpi-desync-split-pos=1 --dpi-desync-autottl --dpi-desync-fooling=badseq --dpi-desync-repeats=8"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=split --dpi-desync-split-pos=1 --dpi-desync-autottl --dpi-desync-fooling=badseq --dpi-desync-repeats=8\""
       ];
     };
     GeneralFix_ALT4 = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=8 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-repeats=6 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=8 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-repeats=6 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     RussiaFix = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-tcp=80 --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --hostlist-auto=/var/run/autohostlist.txt --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-repeats=11 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin --new"
+        "--filter-tcp=80 --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --hostlist-auto=\"/var/run/autohostlist.txt\" --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-repeats=11 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --new ^"
         "--filter-tcp=80,443 --dpi-desync=fake,disorder2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-udp=50000-50099 --hostlist=${discordHostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-any-protocol --dpi-desync-cutoff=n4 --new"
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=443 --dpi-desync=fake --dpi-desync-repeats=11"
+        "--filter-udp=50000-50099 --hostlist=\"${discordHostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-any-protocol --dpi-desync-cutoff=n4 --new ^"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=443 --dpi-desync=fake --dpi-desync-repeats=11\""
       ];
     };
     UltimateFix = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,split --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,split --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     UltimateFix_ALT = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,split --dpi-desync-autottl=5 --dpi-desync-repeats=6 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,split --dpi-desync-autottl=5 --dpi-desync-repeats=6 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     UltimateFix_ALT_EXTENDED = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-udplen-increment=10 --dpi-desync-udplen-pattern=0xDEADBEEF --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,split --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-udplen-increment=10 --dpi-desync-udplen-pattern=0xDEADBEEF --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,split --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     UltimateFix_ALT_v10 = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake,disorder2 --dpi-desync-repeats=11 --dpi-desync-udplen-increment=10 --dpi-desync-udplen-pattern=0xDEADBEEF --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake,tamper --dpi-desync-any-protocol --dpi-desync-cutoff=n5 --dpi-desync-repeats=11 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=5 --dpi-desync-fooling=badseq --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=split2 --dpi-desync-split-pos=4 --dpi-desync-autottl=5 --dpi-desync-repeats=11 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,disorder2 --dpi-desync-repeats=11 --dpi-desync-udplen-increment=10 --dpi-desync-udplen-pattern=0xDEADBEEF --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake,tamper --dpi-desync-any-protocol --dpi-desync-cutoff=n5 --dpi-desync-repeats=11 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=5 --dpi-desync-fooling=badseq --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=split2 --dpi-desync-split-pos=4 --dpi-desync-autottl=5 --dpi-desync-repeats=11 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" \""
       ];
     };
     UltimateFix_ALT_v2 = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=split2 --dpi-desync-split-seqovl=652 --dpi-desync-split-pos=2 --dpi-desync-split-seqovl-pattern=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=split2 --dpi-desync-split-seqovl=652 --dpi-desync-split-pos=2 --dpi-desync-split-seqovl-pattern=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     UltimateFix_ALT_v3 = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,split --dpi-desync-split-pos=1 --dpi-desync-autottl --dpi-desync-fooling=badseq --dpi-desync-repeats=8"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,split --dpi-desync-split-pos=1 --dpi-desync-autottl --dpi-desync-fooling=badseq --dpi-desync-repeats=8\""
       ];
     };
     UltimateFix_ALT_v4 = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-repeats=6 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-repeats=6 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     UltimateFix_ALT_v5 = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-l3=ipv4 --filter-tcp=443 --dpi-desync=syndata"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-l3=ipv4 --filter-tcp=443 --dpi-desync=syndata\""
       ];
     };
     UltimateFix_ALT_v6 = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=8 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=8 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,disorder2 --dpi-desync-autottl=2 --dpi-desync-repeats=8 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=8 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=8 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,disorder2 --dpi-desync-autottl=2 --dpi-desync-repeats=8 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" \""
       ];
     };
     UltimateFix_ALT_v7 = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=10 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d4 --dpi-desync-repeats=10 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=3 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,disorder2 --dpi-desync-autottl=3 --dpi-desync-repeats=10 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=10 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d4 --dpi-desync-repeats=10 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=3 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,disorder2 --dpi-desync-autottl=3 --dpi-desync-repeats=10 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     UltimateFix_ALT_v8 = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake,disorder2 --dpi-desync-repeats=12 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake,tamper --dpi-desync-any-protocol --dpi-desync-cutoff=d5 --dpi-desync-repeats=12 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,disorder2 --dpi-desync-autottl=4 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=split2 --dpi-desync-split-pos=3 --dpi-desync-autottl=4 --dpi-desync-repeats=12 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,disorder2 --dpi-desync-repeats=12 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake,tamper --dpi-desync-any-protocol --dpi-desync-cutoff=d5 --dpi-desync-repeats=12 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,disorder2 --dpi-desync-autottl=4 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=split2 --dpi-desync-split-pos=3 --dpi-desync-autottl=4 --dpi-desync-repeats=12 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     UltimateFix_ALT_v9 = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake,tamper --dpi-desync-repeats=8 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake,disorder2 --dpi-desync-any-protocol --dpi-desync-cutoff=n4 --dpi-desync-repeats=8 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split --dpi-desync-autottl=3 --dpi-desync-fooling=badseq --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=split --dpi-desync-split-pos=2 --dpi-desync-autottl=3 --dpi-desync-repeats=8 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,tamper --dpi-desync-repeats=8 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake,disorder2 --dpi-desync-any-protocol --dpi-desync-cutoff=n4 --dpi-desync-repeats=8 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split --dpi-desync-autottl=3 --dpi-desync-fooling=badseq --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=split --dpi-desync-split-pos=2 --dpi-desync-autottl=3 --dpi-desync-repeats=8 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" \""
       ];
     };
     UltimateFix_Universal = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80  --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin --dpi-desync-split-pos=1"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80  --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --dpi-desync-split-pos=1 \""
       ];
     };
     UltimateFix_Universal_v2 = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake,disorder2 --dpi-desync-repeats=8 --dpi-desync-udplen-increment=12 --dpi-desync-udplen-pattern=0xDEADBEEF --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake,tamper --dpi-desync-any-protocol --dpi-desync-cutoff=d4 --dpi-desync-repeats=8 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=3 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=disorder2 --dpi-desync-split-pos=2 --dpi-desync-autottl=3 --dpi-desync-repeats=8 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,disorder2 --dpi-desync-repeats=8 --dpi-desync-udplen-increment=12 --dpi-desync-udplen-pattern=0xDEADBEEF --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake,tamper --dpi-desync-any-protocol --dpi-desync-cutoff=d4 --dpi-desync-repeats=8 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=3 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=disorder2 --dpi-desync-split-pos=2 --dpi-desync-autottl=3 --dpi-desync-repeats=8 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" \""
       ];
     };
     UltimateFix_Universal_v3 = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-repeats=10 --dpi-desync-udplen-increment=15 --dpi-desync-udplen-pattern=0xCAFEBABE --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake,disorder2 --dpi-desync-any-protocol --dpi-desync-cutoff=n5 --dpi-desync-repeats=10 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,disorder2 --dpi-desync-autottl=4 --dpi-desync-fooling=badseq --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=split --dpi-desync-split-pos=3 --dpi-desync-autottl=4 --dpi-desync-repeats=10 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-repeats=10 --dpi-desync-udplen-increment=15 --dpi-desync-udplen-pattern=0xCAFEBABE --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake,disorder2 --dpi-desync-any-protocol --dpi-desync-cutoff=n5 --dpi-desync-repeats=10 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,disorder2 --dpi-desync-autottl=4 --dpi-desync-fooling=badseq --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=split --dpi-desync-split-pos=3 --dpi-desync-autottl=4 --dpi-desync-repeats=10 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" \""
       ];
     };
     UltimateFix_MGTS = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     YoutubeFix_ALT = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-udplen-increment=10 --dpi-desync-repeats=6 --dpi-desync-udplen-pattern=0xDEADBEEF --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,split --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-udplen-increment=10 --dpi-desync-repeats=6 --dpi-desync-udplen-pattern=0xDEADBEEF --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,split --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     discord = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-50100 --hostlist=${discordHostlist} --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,split --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-50100 --hostlist=\"${discordHostlist}\" --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,split --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     fix_v1 = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-repeats=10 --dpi-desync-udplen-increment=15 --dpi-desync-udplen-pattern=0xCAFEBABE --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake,disorder2 --dpi-desync-any-protocol --dpi-desync-cutoff=n5 --dpi-desync-repeats=10 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,disorder2 --dpi-desync-autottl=4 --dpi-desync-fooling=badseq --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=split --dpi-desync-split-pos=3 --dpi-desync-autottl=4 --dpi-desync-repeats=10 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-repeats=10 --dpi-desync-udplen-increment=15 --dpi-desync-udplen-pattern=0xCAFEBABE --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake,disorder2 --dpi-desync-any-protocol --dpi-desync-cutoff=n5 --dpi-desync-repeats=10 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,disorder2 --dpi-desync-autottl=4 --dpi-desync-fooling=badseq --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=split --dpi-desync-split-pos=3 --dpi-desync-autottl=4 --dpi-desync-repeats=10 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" \""
       ];
     };
     fix_v2 = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new"
-        "--filter-udp=50000-65535 --hostlist=${discordHostlist} --dpi-desync=fake,disorder2 --dpi-desync-any-protocol --dpi-desync-cutoff=n5 --dpi-desync-repeats=10 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=multisplit --dpi-desync-repeats=2 --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=${zapretData}/fake/tls_clienthello_www_google_com.bin --new"
-        ""
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^"
+        "--filter-udp=50000-65535 --hostlist=\"${discordHostlist}\" --dpi-desync=fake,disorder2 --dpi-desync-any-protocol --dpi-desync-cutoff=n5 --dpi-desync-repeats=10 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=multisplit --dpi-desync-repeats=2 --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --new \""
       ];
     };
     fix_v3 = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-tcp=80,443 --hostlist=${hostlist} --dpi-desync=fake,multidisorder --dpi-desync-split-pos=1,sniext+1,host+1,midsld-2,midsld,midsld+2,endhost-1 --dpi-desync-ttl=4 --dpi-desync-fake-tls=0x00000000 --dpi-desync-fake-tls=! --dpi-desync-fake-tls-mod=rnd,rndsni --new"
-        "--filter-udp=80,443  --hostlist=${hostlist} --dpi-desync=fake,multidisorder --dpi-desync-split-pos=1,sniext+1,host+1,midsld-2,midsld,midsld+2,endhost-1 --dpi-desync-ttl=4 --dpi-desync-fake-tls=0x00000000 --dpi-desync-fake-tls=! --dpi-desync-fake-tls-mod=rnd,rndsni,dupsid --new"
-        "--filter-udp=50000-50099 --filter-l7=discord,stun --dpi-desync=fake"
+        "--filter-tcp=80,443 --hostlist=\"${hostlist}\" --dpi-desync=fake,multidisorder --dpi-desync-split-pos=1,sniext+1,host+1,midsld-2,midsld,midsld+2,endhost-1 --dpi-desync-ttl=4 --dpi-desync-fake-tls=0x00000000 --dpi-desync-fake-tls=! --dpi-desync-fake-tls-mod=rnd,rndsni --new ^"
+        "--filter-udp=80,443  --hostlist=\"${hostlist}\" --dpi-desync=fake,multidisorder --dpi-desync-split-pos=1,sniext+1,host+1,midsld-2,midsld,midsld+2,endhost-1 --dpi-desync-ttl=4 --dpi-desync-fake-tls=0x00000000 --dpi-desync-fake-tls=! --dpi-desync-fake-tls-mod=rnd,rndsni,dupsid --new ^"
+        "--filter-udp=50000-50099 --filter-l7=discord,stun --dpi-desync=fake\""
       ];
     };
     general = {
-      udpPorts = [ "443" "19294:19344" "50000:50100" ];
+      udpPorts = [
+        "443"
+        "19294:19344"
+        "50000:50100"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,multidisorder --dpi-desync-split-pos=midsld --dpi-desync-repeats=8 --dpi-desync-fooling=md5sig,badseq --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,multidisorder --dpi-desync-split-pos=midsld --dpi-desync-repeats=8 --dpi-desync-fooling=md5sig,badseq --new"
-        "--filter-udp=443 --hostlist=${discordHostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-tcp=80 --hostlist=${discordHostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,multidisorder --dpi-desync-split-pos=midsld --dpi-desync-repeats=8 --dpi-desync-fooling=md5sig,badseq --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,multidisorder --dpi-desync-split-pos=midsld --dpi-desync-repeats=8 --dpi-desync-fooling=md5sig,badseq --new ^"
+        "--filter-udp=443 --hostlist=\"${discordHostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-tcp=80 --hostlist=\"${discordHostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig\""
       ];
     };
     general_ALT = {
-      udpPorts = [ "443" "19294:19344" "50000:50100" ];
+      udpPorts = [
+        "443"
+        "19294:19344"
+        "50000:50100"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,fakedsplit --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fakedsplit-pattern=0x00 --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,fakedsplit --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fakedsplit-pattern=0x00 --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin --new"
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,fakedsplit --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fakedsplit-pattern=0x00 --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,fakedsplit --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fakedsplit-pattern=0x00 --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --new ^"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig\""
       ];
     };
     general_ALT2 = {
-      udpPorts = [ "443" "19294:19344" "50000:50100" ];
+      udpPorts = [
+        "443"
+        "19294:19344"
+        "50000:50100"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=multisplit --dpi-desync-split-seqovl=652 --dpi-desync-split-pos=2 --dpi-desync-split-seqovl-pattern=${zapretData}/fake/tls_clienthello_www_google_com.bin --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=multisplit --dpi-desync-split-seqovl=652 --dpi-desync-split-pos=2 --dpi-desync-split-seqovl-pattern=${zapretData}/fake/tls_clienthello_www_google_com.bin --new"
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=multisplit --dpi-desync-split-seqovl=652 --dpi-desync-split-pos=2 --dpi-desync-split-seqovl-pattern=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=multisplit --dpi-desync-split-seqovl=652 --dpi-desync-split-pos=2 --dpi-desync-split-seqovl-pattern=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --new ^"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
       ];
     };
     general_ALT3 = {
-      udpPorts = [ "443" "19294:19344" "50000:50100" ];
+      udpPorts = [
+        "443"
+        "19294:19344"
+        "50000:50100"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fakedsplit --dpi-desync-split-pos=1 --dpi-desync-autottl --dpi-desync-fooling=badseq --dpi-desync-repeats=8 --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fakedsplit --dpi-desync-split-pos=1 --dpi-desync-autottl --dpi-desync-fooling=badseq --dpi-desync-repeats=8 --new"
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fakedsplit --dpi-desync-split-pos=1 --dpi-desync-autottl --dpi-desync-fooling=badseq --dpi-desync-repeats=8 --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fakedsplit --dpi-desync-split-pos=1 --dpi-desync-autottl --dpi-desync-fooling=badseq --dpi-desync-repeats=8 --new ^"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^\""
       ];
     };
     general_ALT4 = {
-      udpPorts = [ "443" "19294:19344" "50000:50100" ];
+      udpPorts = [
+        "443"
+        "19294:19344"
+        "50000:50100"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,multisplit --dpi-desync-repeats=6 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-repeats=6 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin --new"
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,multisplit --dpi-desync-repeats=6 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-repeats=6 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --new ^"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
       ];
     };
     general_ALT5 = {
-      udpPorts = [ "443" "19294:19344" "50000:50100" ];
+      udpPorts = [
+        "443"
+        "19294:19344"
+        "50000:50100"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-l3=ipv4 --filter-tcp=443,2053,2083,2087,2096,8443 --dpi-desync=syndata --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-l3=ipv4 --filter-tcp=443,2053,2083,2087,2096,8443 --dpi-desync=syndata --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
       ];
     };
     general_ALT6 = {
-      udpPorts = [ "443" "19294:19344" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "19294:19344"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=${zapretData}/fake/tls_clienthello_www_google_com.bin --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=multisplit --dpi-desync-repeats=2 --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=${zapretData}/fake/quic_initial_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=multisplit --dpi-desync-repeats=2 --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"${zapretData}/fake/quic_initial_www_google_com.bin\"\""
       ];
     };
     general_ALT7 = {
-      udpPorts = [ "443" "19294:19344" "50000:50100" ];
+      udpPorts = [
+        "443"
+        "19294:19344"
+        "50000:50100"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=multisplit --dpi-desync-split-pos=2,sniext+1 --dpi-desync-split-seqovl=679 --dpi-desync-split-seqovl-pattern=${zapretData}/fake/tls_clienthello_www_google_com.bin --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=multisplit --dpi-desync-split-pos=2,sniext+1 --dpi-desync-split-seqovl=679 --dpi-desync-split-seqovl-pattern=${zapretData}/fake/tls_clienthello_www_google_com.bin --new"
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=multisplit --dpi-desync-split-pos=2,sniext+1 --dpi-desync-split-seqovl=679 --dpi-desync-split-seqovl-pattern=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=multisplit --dpi-desync-split-pos=2,sniext+1 --dpi-desync-split-seqovl=679 --dpi-desync-split-seqovl-pattern=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --new ^"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
       ];
     };
     general_ALT8 = {
-      udpPorts = [ "443" "19294:19344" "50000:50100" ];
+      udpPorts = [
+        "443"
+        "19294:19344"
+        "50000:50100"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 --new"
-        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake --dpi-desync-fake-tls-mod=none --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-fake-tls-mod=none --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 --new"
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 --new"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 --new ^"
+        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake --dpi-desync-fake-tls-mod=none --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-fake-tls-mod=none --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 --new ^"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 --new ^"
       ];
     };
     general_fake_tls_auto = {
-      udpPorts = [ "443" "19294:19344" "50000:50100" ];
+      udpPorts = [
+        "443"
+        "19294:19344"
+        "50000:50100"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,fakedsplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,fakedsplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,fakedsplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,fakedsplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
       ];
     };
     general_fake_tls_auto_alt = {
-      udpPorts = [ "443" "19294:19344" "50000:50100" ];
+      udpPorts = [
+        "443"
+        "19294:19344"
+        "50000:50100"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,fakedsplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,fakedsplit --dpi-desync-split-pos=1 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=10000000 --dpi-desync-repeats=8 --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,fakedsplit --dpi-desync-split-pos=1 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=10000000 --dpi-desync-repeats=8 --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --new"
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,fakedsplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,fakedsplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,fakedsplit --dpi-desync-split-pos=1 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=10000000 --dpi-desync-repeats=8 --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,fakedsplit --dpi-desync-split-pos=1 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=10000000 --dpi-desync-repeats=8 --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --new ^"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,fakedsplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
       ];
     };
     general_fake_tls_auto_alt_2 = {
-      udpPorts = [ "443" "19294:19344" "50000:50100" ];
+      udpPorts = [
+        "443"
+        "19294:19344"
+        "50000:50100"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,fakedsplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=10000000 --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern=${zapretData}/fake/tls_clienthello_www_google_com.bin --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=10000000 --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern=${zapretData}/fake/tls_clienthello_www_google_com.bin --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --new"
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,fakedsplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,fakedsplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=10000000 --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=10000000 --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --new ^"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,fakedsplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
       ];
     };
     general_fake_tls_auto_alt_3 = {
-      udpPorts = [ "443" "19294:19344" "50000:50100" ];
+      udpPorts = [
+        "443"
+        "19294:19344"
+        "50000:50100"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,fakedsplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern=${zapretData}/fake/tls_clienthello_www_google_com.bin --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern=${zapretData}/fake/tls_clienthello_www_google_com.bin --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --new"
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,fakedsplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern=${zapretData}/fake/tls_clienthello_www_google_com.bin --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --new"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,fakedsplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --new ^"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,fakedsplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --new ^\""
       ];
     };
     general_old = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535  --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,split --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535  --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,split --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     general_simple_fake = {
-      udpPorts = [ "443" "19294:19344" "50000:50100" ];
+      udpPorts = [
+        "443"
+        "19294:19344"
+        "50000:50100"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin --new"
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --new ^"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
       ];
     };
     general_simple_fake_alt = {
-      udpPorts = [ "443" "19294:19344" "50000:50100" ];
+      udpPorts = [
+        "443"
+        "19294:19344"
+        "50000:50100"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=10000000 --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=10000000 --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin --new"
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=10000000 --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=10000000 --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --new ^"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
       ];
     };
     general_MGTS = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535 --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535 --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-autottl=2 --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     general_MGTS2 = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=50000-65535  --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new"
-        "--filter-tcp=80 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=50000-65535  --dpi-desync=fake --dpi-desync-any-protocol --dpi-desync-cutoff=d3 --dpi-desync-repeats=6 --new ^"
+        "--filter-tcp=80 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\"\""
       ];
     };
     preset_russia = {
-      udpPorts = [ "443" "50000:65535" ];
+      udpPorts = [
+        "443"
+        "50000:65535"
+      ];
       filters = [
-        "--filter-tcp=80 --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --hostlist=${hostlist} --new"
-        "--filter-tcp=443 --hostlist=${hostlist} --dpi-desync=fake,split2 --dpi-desync-repeats=11 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=${zapretData}/fake/tls_clienthello_www_google_com.bin --new"
-        "--filter-tcp=80,443 --dpi-desync=fake,disorder2 --hostlist=${hostlist} --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
-        "--filter-udp=50000-50099  --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-any-protocol --dpi-desync-cutoff=n4 --new"
-        "--filter-udp=443 --hostlist=${hostlist} --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=${zapretData}/fake/quic_initial_www_google_com.bin --new"
-        "--filter-udp=443 --dpi-desync=fake --dpi-desync-repeats=11"
+        "--filter-tcp=80 --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --hostlist=\"${hostlist}\" --new ^"
+        "--filter-tcp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake,split2 --dpi-desync-repeats=11 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls=\"${zapretData}/fake/tls_clienthello_www_google_com.bin\" --new ^"
+        "--filter-tcp=80,443 --dpi-desync=fake,disorder2 --hostlist=\"${hostlist}\" --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new"
+        "--filter-udp=50000-50099  --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-any-protocol --dpi-desync-cutoff=n4 --new ^"
+        "--filter-udp=443 --hostlist=\"${hostlist}\" --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=\"${zapretData}/fake/quic_initial_www_google_com.bin\" --new ^"
+        "--filter-udp=443 --dpi-desync=fake --dpi-desync-repeats=11\""
       ];
     };
   };

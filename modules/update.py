@@ -1,8 +1,9 @@
 #!/usr/bin/env nix-shell
-#! nix-shell -i python3 -p "python3.withPackages (ps: with ps; [ ps.requests ])"
+#! nix-shell -i python3 -p "python3.withPackages (ps: with ps; [ ps.requests ])" nixfmt-rfc-style
 
 import zipfile
 import requests
+import subprocess
 import io
 import re
 from pathlib import Path
@@ -201,6 +202,13 @@ def main():
     # Temporary directory удалится автоматически после выхода из контекста
     tmp_dir.cleanup()
 
+    try:
+        print("Running nixfmt to format code")
+        subprocess.run(["nixfmt", "zapret.nix"], capture_output=True, text=True)
+    except Exception as e:
+        print(f"WARNING! Failed to format code: {e}")
+        exit(1)
+    print("Success")
 
 if __name__ == "__main__":
     main()

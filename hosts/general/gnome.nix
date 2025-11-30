@@ -29,7 +29,7 @@
       # Increase timeout for compositor's alive check (30 seconds)
       [org.gnome.mutter]
       check-alive-timeout=30000
-      experimental-features=['xwayland-native-scaling', 'variable-refresh-rate']
+      experimental-features=['xwayland-native-scaling', 'variable-refresh-rate', 'scale-monitor-framebuffer']
 
       # Disable 'sleep' and 'airplane' media buttons on keyboard
       [org.gnome.settings-daemon.plugins.media-keys]

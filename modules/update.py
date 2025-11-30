@@ -10,6 +10,39 @@ import tempfile
 
 ZIP_URL = "https://github.com/Snowy-Fluffy/zapret.cfgs/archive/refs/heads/main.zip"
 
+def parse_env(text: str) -> dict:
+    # 1) regex for env pattern
+    var_pattern = re.compile(r'(?=^[A-Z0-9_]+=)', re.MULTILINE)
+
+    # 2) split before regex
+    blocks = var_pattern.split(text)
+
+    # 3) remove empty strings and comments
+    blocks = [b.strip() for b in blocks if b.strip()]
+    blocks = [b for b in blocks if not b.lstrip().startswith("#")]
+
+    result = {}
+    for block in blocks:
+        # 4) split before first '='
+        key, _, value = block.partition("=")
+        key = key.strip()
+        raw_value = value.strip()
+
+        # 5) split value for clean up
+        lines = raw_value.split("\n")
+
+        # 6) clean up: remove empty lines, comments, quote lines
+        result_lines = []
+        for line in lines:
+            line = line.strip()
+            if line.startswith("#") or line == '' or line == '"':
+                continue
+            result_lines.append(line)
+
+        # 7) join
+        result[key] = "\n".join(result_lines)
+
+    return result
 
 def nix_escape(s: str) -> str:
     """Escape for Nix string literals."""
@@ -30,18 +63,25 @@ def download_and_extract() -> Path:
     return Path(tmp_dir.name) / root_dir_name, tmp_dir
 
 
-def load_hostlist(base: Path) -> str:
-    file = base / "lists" / "list-basic.txt"
-    lines = [l.strip() for l in file.read_text().splitlines() if l.strip()]
-    items = ["\"" + nix_escape(x) + "\"" for x in lines]
-    return "[\n    " + "\n    ".join(items) + "\n  ]"
+def load_list(path: Path) -> str:
+    lines = path.read_text().splitlines()
+    items = [f'"{x}"' for x in lines]
+    return f'[{"\n".join(items)}]'
 
+def load_hostlist(base: Path) -> str:
+    path = base / "lists" / "list-basic.txt"
+    return load_list(path)
 
 def load_discord_list(base: Path) -> str:
     file = base / "lists" / "ipset-discord.txt"
-    lines = [l.strip() for l in file.read_text().splitlines() if l.strip()]
-    items = ["\"" + nix_escape(x) + "\"" for x in lines]
-    return "[\n    " + "\n    ".join(items) + "\n  ]"
+    return load_list(file)
+
+def replace_paths(p: str) -> str:
+    p = p.replace('/opt/zapret/ipset/zapret-hosts-user.txt', '${hostlist}')
+    p = p.replace('/opt/zapret/ipset/ipset-discord.txt', '${discordHostlist}')
+    p = p.replace('/opt/zapret/files/fake/autohostlist.txt', '/var/run/autohostlist.txt')
+    p = re.sub(r'/opt/zapret/files', '${zapretData}', p)
+    return p
 
 
 def load_strategies(base: Path) -> dict:
@@ -51,56 +91,34 @@ def load_strategies(base: Path) -> dict:
     for cfg_file in sorted(cfg_dir.glob("*")):
         if not cfg_file.is_file():
             continue
+        
+        # Clean strategy name
+        strategy_name = cfg_file.stem
+        strategy_name = strategy_name.replace("для_МГТС", "MGTS").replace("МГТС", "MGTS")
 
-        name = cfg_file.stem
         text = cfg_file.read_text()
 
-        # Извлекаем NFQWS_OPT до комментария # none,...
-        m = re.search(r'NFQWS_OPT="([\s\S]*?)"\s*#\s*none,ipset,hostlist,autohostlist', text)
-        if not m:
-            continue
-        block = m.group(1)
+        envs = parse_env(text)
 
-        # Удаляем все строки, начинающиеся с #
-        clean = "\n".join(line for line in block.splitlines() if not line.lstrip().startswith("#")).strip()
+        nfqws_opt = envs["NFQWS_OPT"]
+        nfqws_opt = replace_paths(nfqws_opt)
 
-        # Split, сохранив --new
-        parts = re.split(r'(?<=--new)\s*\^?\s*', clean)
-        parts = [p.strip() for p in parts if p.strip()]
+        nfqws_udp_ports = envs["NFQWS_PORTS_UDP"]
+        nfqws_udp_ports_list = [f'"{p.replace("-", ":")}"' for p in nfqws_udp_ports.split(",")]
 
-        # Заменяем пути и убираем лишнее
-        cleaned = []
-        for p in parts:
-            p = p.replace('/opt/zapret/ipset/zapret-hosts-user.txt', '${hostlist}')
-            p = p.replace('/opt/zapret/ipset/ipset-discord.txt', '${discordHostlist}')
-            p = p.replace('/opt/zapret/files/fake/autohostlist.txt', '/var/run/autohostlist.txt')
-            p = re.sub(r'/opt/zapret/files', '${zapretData}', p)
-            p = p.replace('"', '').replace('\\', '').strip()
-            cleaned.append(p)
+        formatted_ports = ' '.join(nfqws_udp_ports_list)
+        formatted_strategy = "\n".join(f'"{nix_escape(f)}"' for f in nfqws_opt.split("\n"))
 
-        # Берём порты UDP прямо из переменной
-        m_ports = re.search(r'^NFQWS_PORTS_UDP=([^\n]+)', text, re.MULTILINE)
-        udp_ports = [p.strip() for p in m_ports.group(1).split(",")] if m_ports else []
+        nix_value = f'{{ udpPorts = [{formatted_ports}]; filters = [{formatted_strategy}]; }}'
 
-        for i in range(0, len(udp_ports)):
-          udp_ports[i] = udp_ports[i].replace("-", ":")
-
-        nix_value = "{\n" \
-                    f"      udpPorts = [ {' '.join('\"'+x+'\"' for x in udp_ports)} ];\n" \
-                    f"      filters = [\n" + \
-                    "\n".join(f"        \"{nix_escape(f)}\"" for f in cleaned) + \
-                    "\n      ];\n    }"
-
-        # Чистим имя
-        name = name.replace("для_МГТС", "MGTS").replace("МГТС", "MGTS")
-        strategies[name] = nix_value
+        strategies[strategy_name] = nix_value
 
     return strategies
 
 
 def generate_nix(hostlist_nix: str, discord_list_nix: str, strategies: dict) -> str:
-    strategy_attrs = "\n".join(f"    {name} = {lst};" for name, lst in strategies.items())
-    enum_list = "\n        ".join([f'"{name}"' for name in strategies.keys()])
+    strategy_attrs = "\n".join(f"{name} = {lst};" for name, lst in strategies.items())
+    enum_list = "\n".join([f'"{name}"' for name in strategies.keys()])
 
     return f"""{{ pkgs, lib, config, ... }}:
 

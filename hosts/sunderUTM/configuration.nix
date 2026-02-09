@@ -15,12 +15,7 @@
     ../general/programs.nix
   ];
 
-  sunderOS = {
-    zapret = {
-      enable = true;
-      strategy = "general_ALT2";
-    };
-  
+  sunderOS = {  
     bootloader.oemLogo.enable = true;
     bootloader.limine = {
       enable = true;
